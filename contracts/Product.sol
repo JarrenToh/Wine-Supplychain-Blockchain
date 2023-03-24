@@ -6,8 +6,10 @@ contract Product {
         product[] componentProduct;
         uint256 productId;
         string name;
-        address owner;
-        address contractAddress;
+        address currentOwner;
+        address currentContractAddress;
+        address previousOwner;
+        address previousContractAddress;
         string placeOfOrigin;
         string productionDate;
         string expirationDate;
@@ -35,12 +37,12 @@ contract Product {
     event ProductCreated(
         uint256 newProductId,
         string name,
-        address contractAddress
+        address currentContractAddress
     );
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
-        require(products[productId].owner == msg.sender);
+        require(products[productId].currentOwner == msg.sender);
         _;
     }
 
@@ -52,7 +54,7 @@ contract Product {
     //methods
     function createProduct(
         string memory name,
-        address contractAddress,
+        address currentContractAddress,
         string memory placeOfOrigin,
         string memory productionDate,
         string memory expirationDate,
@@ -75,8 +77,10 @@ contract Product {
             componentProduct: new product[](0),
             productId: noProduct,
             name: name,
-            owner: msg.sender,
-            contractAddress: contractAddress,
+            currentOwner: msg.sender,
+            currentContractAddress: currentContractAddress,
+            previousOwner: address(0),
+            previousContractAddress: address(0),
             placeOfOrigin: placeOfOrigin,
             productionDate: productionDate,
             expirationDate: expirationDate,
@@ -103,9 +107,14 @@ contract Product {
     //transfer ownership when it moves from one entity to another entity in the supplychain
     function transferProduct(
         uint256 productId,
-        address newOwner
+        address newOwner,
+        address newContractAdddress
     ) public ownerOnly(productId) validProductId(productId) {
-        products[productId].owner = newOwner;
+        products[productId].previousOwner = products[productId].currentOwner;
+        products[productId].currentOwner = newOwner;
+
+        products[productId].previousContractAddress = products[productId].currentContractAddress;
+        products[productId].currentContractAddress = newContractAdddress;
     }
 
     // return value of product to the owner of the product
@@ -116,20 +125,36 @@ contract Product {
         targetAddress.transfer(value);
     }
 
-    function getOwner(uint256 productId) public view validProductId(productId) returns (address){
-        return products[productId].owner;
+    function getCurrentOwner(uint256 productId) public view validProductId(productId) returns (address){
+        return products[productId].currentOwner;
     }
 
-    function setOwner(uint256 productId, address newOwner) public ownerOnly(productId) validProductId(productId) {
-        products[productId].owner= newOwner;
+    function setCurrentOwner(uint256 productId, address newOwner) public ownerOnly(productId) validProductId(productId) {
+        products[productId].currentOwner= newOwner;
     }
 
-    function getContractAddress(uint256 productId) public view validProductId(productId) returns (address){
-        return products[productId].contractAddress;
+    function getCurrentContractAddress(uint256 productId) public view validProductId(productId) returns (address){
+        return products[productId].currentContractAddress;
     }
 
-    function setContractAddress(uint256 productId, address newContractAddress) public ownerOnly(productId) validProductId(productId) {
-        products[productId].contractAddress = newContractAddress;
+    function setCurrentContractAddress(uint256 productId, address newContractAddress) public ownerOnly(productId) validProductId(productId) {
+        products[productId].currentContractAddress = newContractAddress;
+    }
+
+    function getPreviousOwner(uint256 productId) public view validProductId(productId) returns (address) {
+        return products[productId].previousOwner;
+    }
+
+    function setPreviousOwner(uint256 productId, address newPreviousOwner) public ownerOnly(productId) validProductId(productId) {
+        products[productId].previousOwner = newPreviousOwner;
+    }
+
+    function getPreviousContractAddress(uint256 productId) public view validProductId(productId) returns (address) {
+        return products[productId].previousContractAddress;
+    }
+
+    function setPreviousContractAddress(uint256 productId, address newPreviousContractAddress) public ownerOnly(productId) validProductId(productId) {
+        products[productId].previousContractAddress = newPreviousContractAddress;
     }
 
     function getPlaceOfOrigin(uint256 productId) public view validProductId(productId) returns (string memory){
