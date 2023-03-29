@@ -1,6 +1,8 @@
 pragma solidity ^0.5.0;
 
 contract Product {
+
+    address contractOwner = msg.sender;
     //struct
     struct product {
         product[] componentProduct;
@@ -16,16 +18,18 @@ contract Product {
         uint256 unitQuantity;
         string unitQuantityType;
         uint256 batchQuantity;
-        string unitPrice;
+        uint256 unitPrice;
         string category;
         bool received;
-        uint256 creationValue;
         productLocation[] previousLocation;
         productLocation currentLocation;
+        bool readyToShip;
     }
 
     struct productLocation {
         string location;
+        string disbatchDate;
+        string expectedArrivalDate;
         string arrivalDate;
     }
 
@@ -61,15 +65,11 @@ contract Product {
         uint256 unitQuantity,
         string memory unitQuantityType,
         uint256 batchQuantity,
-        string memory unitPrice,
+        uint256 unitPrice,
         string memory category,
-        string memory currentPhysicalLocation,
-        string memory arrivalDate
-    ) public payable returns (uint256) {
-        require(
-            msg.value > 0.01 ether,
-            "at least 0.01 ETH is needed to create a new product"
-        );
+        string memory currentPhysicalLocation
+    ) public returns (uint256) {
+
         require(bytes(name).length > 0, "Name cannot be empty");
 
         //create new product
@@ -90,12 +90,14 @@ contract Product {
             unitPrice: unitPrice,
             category: category,
             received: false,
-            creationValue: msg.value,
             previousLocation: new productLocation[](0),
             currentLocation: productLocation({
                 location: currentPhysicalLocation,
-                arrivalDate: arrivalDate
-            })
+                disbatchDate: "null",
+                expectedArrivalDate: "null",
+                arrivalDate: "null"
+            }),
+            readyToShip: false
         });
 
         uint256 newProductId = noProduct++;
@@ -104,6 +106,9 @@ contract Product {
         return newProductId;
     }
 
+    function addComponentProduct(uint256 mainProductId, uint256 productId) public ownerOnly(productId) validProductId(productId){
+        products[mainProductId].componentProduct.push(products[productId]);
+    }
     //transfer ownership when it moves from one entity to another entity in the supplychain
     function transferProduct(
         uint256 productId,
@@ -116,14 +121,22 @@ contract Product {
         products[productId].previousContractAddress = products[productId].currentContractAddress;
         products[productId].currentContractAddress = newContractAdddress;
     }
+    
 
     // return value of product to the owner of the product
     function removeProduct(uint256 productId) public ownerOnly(productId) validProductId(productId) {
-        uint256 value = products[productId].creationValue;
+        // uint256 value = products[productId].creationValue;
         delete products[productId];
-        address payable targetAddress = msg.sender;
-        targetAddress.transfer(value);
+        // address payable targetAddress = msg.sender;
+        // targetAddress.transfer(value);
     }
+
+
+    function getProductName(uint256 productId) public view validProductId(productId) returns (string memory){
+        return products[productId].name;
+    }
+
+
 
     function getCurrentOwner(uint256 productId) public view validProductId(productId) returns (address){
         return products[productId].currentOwner;
@@ -204,11 +217,11 @@ contract Product {
         products[productId].batchQuantity = newBatchQuantity;
     }
 
-    function getUnitPrice(uint256 productId) public view validProductId(productId) returns (string memory){
+    function getUnitPrice(uint256 productId) public view validProductId(productId) returns (uint256){
         return products[productId].unitPrice;
     }
 
-    function setUnitPrice(uint256 productId, string memory newUnitPrice) public ownerOnly(productId) validProductId(productId) {
+    function setUnitPrice(uint256 productId, uint256 newUnitPrice) public ownerOnly(productId) validProductId(productId) {
         products[productId].unitPrice = newUnitPrice;
     }
 
@@ -228,34 +241,67 @@ contract Product {
         products[productId].received = newReceived;
     }
 
-    function getCreationValue(uint256 productId) public view validProductId(productId) returns (uint256){
-        return products[productId].creationValue;
-    }
+    // function getCreationValue(uint256 productId) public view validProductId(productId) returns (uint256){
+    //     return products[productId].creationValue;
+    // }
 
-    function setCreationValue(uint256 productId, uint256 newCreationValue) public ownerOnly(productId) validProductId(productId) {
-        products[productId].creationValue = newCreationValue;
-    }
+    // function setCreationValue(uint256 productId, uint256 newCreationValue) public ownerOnly(productId) validProductId(productId) {
+    //     products[productId].creationValue = newCreationValue;
+    // }
 
-    function getPreviousLocation(uint256 productId, uint256 index) public view validProductId(productId) returns (string memory, string memory) {
+    function getPreviousLocation(uint256 productId, uint256 index) public view validProductId(productId) returns (string memory, string memory, string memory, string memory) {
         require(index < products[productId].previousLocation.length, "Invalid index");
-        return (products[productId].previousLocation[index].location, products[productId].previousLocation[index].arrivalDate);
+        return (
+            products[productId].previousLocation[index].location, 
+            products[productId].previousLocation[index].disbatchDate, 
+            products[productId].previousLocation[index].expectedArrivalDate, 
+            products[productId].previousLocation[index].arrivalDate
+            );
     }
 
-    function addPreviousLocation(uint256 productId, string memory newLocation, string memory newDate) public ownerOnly(productId) validProductId(productId) {
+    function addPreviousLocation(
+        uint256 productId, 
+    string memory prevLocation, 
+    string memory prevDisbatchDate, 
+    string memory prevExpectedArrivalDate, 
+    string memory prevArrivalDate
+    ) public ownerOnly(productId) validProductId(productId) {
         products[productId].previousLocation.push(productLocation({
-            location: newLocation,
-            arrivalDate: newDate
+            location: prevLocation,
+            disbatchDate: prevDisbatchDate,
+            expectedArrivalDate: prevExpectedArrivalDate,
+            arrivalDate: prevArrivalDate
         }));
     }
 
-    function getCurrentLocation(uint256 productId) public view validProductId(productId) returns (string memory, string memory) {
-        return (products[productId].currentLocation.location, products[productId].currentLocation.arrivalDate);
+    function getCurrentLocation(uint256 productId) public view validProductId(productId) returns (string memory, string memory, string memory, string memory) {
+        return (
+            products[productId].currentLocation.location, 
+            products[productId].currentLocation.disbatchDate, 
+            products[productId].currentLocation.expectedArrivalDate, 
+            products[productId].currentLocation.arrivalDate
+            );
     }
 
-    function setCurrentLocation(uint256 productId, string memory newLocation, string memory newDate) public ownerOnly(productId) validProductId(productId) {
+    function setCurrentLocation(uint256 productId, 
+    string memory newLocation,
+    string memory newDisbatchDate, 
+    string memory newExpectedArrivalDate, 
+    string memory newArrivalDate) public ownerOnly(productId) validProductId(productId) {
         products[productId].currentLocation = productLocation({
             location: newLocation,
-            arrivalDate: newDate
+            disbatchDate: newDisbatchDate,
+            expectedArrivalDate: newExpectedArrivalDate,
+            arrivalDate: newArrivalDate
         });
     }
+
+    function getReadyToShip(uint256 productId) public view ownerOnly(productId) returns (bool) {
+        products[productId].readyToShip;
+    }
+
+    function setReadyToShip(uint256 productId, bool shipStatus) public ownerOnly(productId) validProductId(productId) {
+        products[productId].readyToShip = shipStatus;
+    }
 }
+
