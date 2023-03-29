@@ -21,7 +21,10 @@ contract Product {
         uint256 unitPrice;
         string category;
         bool received;
+<<<<<<< HEAD
         bool used;
+=======
+>>>>>>> 3b4b299659d91aa15d8648d3106190b8f50eb136
         productLocation[] previousLocation;
         productLocation currentLocation;
         bool readyToShip;
@@ -30,6 +33,10 @@ contract Product {
     struct productLocation {
         string location;
         string disbatchDate;
+<<<<<<< HEAD
+=======
+        string expectedArrivalDate;
+>>>>>>> 3b4b299659d91aa15d8648d3106190b8f50eb136
         string arrivalDate;
     }
 
@@ -90,11 +97,18 @@ contract Product {
             unitPrice: unitPrice,
             category: category,
             received: false,
+<<<<<<< HEAD
             used: false,
+=======
+>>>>>>> 3b4b299659d91aa15d8648d3106190b8f50eb136
             previousLocation: new productLocation[](0),
             currentLocation: productLocation({
                 location: currentPhysicalLocation,
                 disbatchDate: "null",
+<<<<<<< HEAD
+=======
+                expectedArrivalDate: "null",
+>>>>>>> 3b4b299659d91aa15d8648d3106190b8f50eb136
                 arrivalDate: "null"
             }),
             readyToShip: false
