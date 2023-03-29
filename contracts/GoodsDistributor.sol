@@ -3,13 +3,18 @@ pragma solidity ^0.5.0;
 import "./Product.sol";
 
 contract GoodsDistributor {
-    event recievedWineBatch(uint256 wineBatchId, address goodsDistributor);
+    event receivedWineBatch(uint256 wineBatchId, address goodsDistributor);
     event sentWineBatch(uint256 wineBatchId, address wholeSaler);
-    event changeLabel(uint256 wineBatchId, string newLabel, address goodsDistributor);
+    event changeLabel(
+        uint256 wineBatchId,
+        string newLabel,
+        address goodsDistributor
+    );
     event addedGoodsDistributor(uint256 distributorId);
     event removedGoodsDistributor(uint256 distributorId);
 
     Product productContract;
+    //FillerPacker fillerPackerContract;
     uint256 public numOfGoodsDistributor = 0;
     mapping(uint256 => address) public goodsDistributors; //mapping the id of the goods distributors to their addresses
     mapping(uint256 => string) public wineBatchLabel;
@@ -59,11 +64,13 @@ contract GoodsDistributor {
                 removedId = i;
                 break;
             }
-        }  
+        }
         emit removedGoodsDistributor(removedId);
     }
 
-    function isGoodsDistributor(address accountNumber) public view returns (bool) {
+    function isGoodsDistributor(
+        address accountNumber
+    ) public view returns (bool) {
         bool exist = checkGoodsDistributorExist(accountNumber);
         if (exist) {
             return true;
@@ -72,17 +79,66 @@ contract GoodsDistributor {
         }
     }
 
-    function relabelWineBatch(uint256 wineBatchId, string memory newLabel, address accountNumber) public {
-        require(isGoodsDistributor(accountNumber) == true, "Requires goods distributor to relabel wine batch!");
+    function relabelWineBatch(
+        uint256 wineBatchId,
+        string memory newLabel,
+        address accountNumber
+    ) public {
+        require(
+            isGoodsDistributor(accountNumber) == true,
+            "Requires goods distributor to relabel wine batch!"
+        );
         wineBatchLabel[wineBatchId] = newLabel;
         wineBatchRelabel[wineBatchId] = accountNumber;
         emit changeLabel(wineBatchId, newLabel, accountNumber);
     }
 
-    function recieveWineBatchFromFiller(uint256 wineBatchId) public payable { 
-       // require(msg.value == productContract.getUnitPrice(), "Insufficient payment!");
-       productContract.setCurrentLocation(wineBatchId, "Goods Distributor", "Today");
-       productContract.addPreviousLocation(wineBatchId, "Filler Packer", "Today");
-       productContract.setReceived(wineBatchId, true);  
+    function receiveWineBatchFromFiller(
+        uint256 wineBatchId,
+        address goodsDistributor,
+        string memory newLocation,
+        string memory newDisbatchDate,
+        string memory newExpectedArrivalDate,
+        string memory newArrivalDate,
+        string memory prevLocation, 
+        string memory prevDisbatchDate, 
+        string memory prevExpectedArrivalDate, 
+        string memory prevArrivalDate
+    ) public payable {
+        require(
+            msg.value == productContract.getUnitPrice(wineBatchId),
+            "Insufficient payment!"
+        );
+        //fillerPackerContract.sendWineToGoodsDistributor(wineBatchId);
+        productContract.setCurrentLocation(
+            wineBatchId,
+            newLocation,
+            newDisbatchDate,
+            newExpectedArrivalDate,
+            newArrivalDate
+        );
+        productContract.addPreviousLocation(
+            wineBatchId,
+            prevLocation,
+            prevDisbatchDate,
+            prevExpectedArrivalDate,
+            prevArrivalDate
+        );
+        productContract.setCurrentContractAddress(wineBatchId, address(this));
+        productContract.setReceived(wineBatchId, true);
+        wineBatchStorage.push(wineBatchId);
+        emit receivedWineBatch(wineBatchId, goodsDistributor);
+    }
+
+    function sendWineToWholeSaler(uint256 wineBatchId, address goodsDistributor) public{
+        productContract.setPreviousContractAddress(wineBatchId, address(this));
+        for (uint i = 0; i < wineBatchStorage.length; i++) {
+            if (wineBatchStorage[i] == wineBatchId) {
+                delete wineBatchStorage[i];
+                break;
+            }
+        }
+        productContract.setReceived(wineBatchId, false);
+        emit sentWineBatch(wineBatchId, goodsDistributor);
     }
 }
