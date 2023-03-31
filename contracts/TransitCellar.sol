@@ -30,10 +30,6 @@ contract TransitCellar {
        return analysisDetails[productId];
     }
 
-    // function getDispatchDetails(uint256 productId) public view returns(string memory) {
-    //    return dispatchDates[productId];
-    // }
-
     function receiveWineFromBulkDistributor(uint256 productId, string memory currentLocation, string memory arrivalDate) public payable ownerOnly(productId) {
         (string memory location, string memory dispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
         productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
@@ -49,17 +45,15 @@ contract TransitCellar {
         emit wineAnalysed(productId);
     }
 
-    // function dispatchWineToFillerPacker(uint256 productId, string memory dispatchDate, address newOwner, address newContractAddress) public payable ownerOnly(productId) {
-    //     // analysisDetails[productId] = analysisDetail;
+    function dispatchWineToFillerPacker(uint256 productId, string memory dispatchDate, address newOwner, address newContractAddress) public ownerOnly(productId) {
+        (string memory location, , string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
+        productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
+        productContract.setCurrentLocation(productId, "", "", "");
 
-    //     (string memory location, string memory prevDispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
-    //     productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
-    //     productContract.setCurrentLocation(productId, "", "", "");
-
-    //     productContract.transferProduct(productId, newOwner, newContractAddress);
-    //     productContract.setReceived(productId, false);
+        productContract.transferProduct(productId, newOwner, newContractAddress);
+        productContract.setReceived(productId, false);
         
-    //     emit wineDispatched(productId);
-    // }
+        emit wineDispatched(productId);
+    }
 
 }
