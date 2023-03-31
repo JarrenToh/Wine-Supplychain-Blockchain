@@ -11,38 +11,40 @@ contract RawMaterialSupplier {
     }
 
 
-    // function addRawMaterial(
-    //     string memory name,
-    //     string memory placeOfOrigin,
-    //     string memory productionDate,
-    //     string memory expirationDate,
-    //     uint256 unitQuantity,
-    //     string memory unitQuantityType,
-    //     uint256 batchQuantity,
-    //     uint256 unitPrice,
-    //     string memory category,
-    //     string memory currentPhysicalLocation
+    function addRawMaterial(
+        string memory name,
+        string memory placeOfOrigin,
+        string memory productionDate,
+        string memory expirationDate,
+        uint256 unitQuantity,
+        string memory unitQuantityType,
+        uint256 batchQuantity,
+        uint256 unitPrice,
+        string memory category
+        // string memory currentPhysicalLocation
 
-    // ) public returns (uint256) {
+    ) public returns (uint256) {
 
 
-    //     uint256 productId = productContract.createProduct(
-    //         name, 
-    //         address(this),
-    //         placeOfOrigin, 
-    //         productionDate, 
-    //         expirationDate, 
-    //         unitQuantity, 
-    //         unitQuantityType, 
-    //         batchQuantity, 
-    //         unitPrice, 
-    //         category, 
-    //         currentPhysicalLocation
-    //         );
+        uint256 productId = productContract.createProduct(
+            name,
+            address(this),
+            unitQuantity, 
+            unitQuantityType, 
+            batchQuantity, 
+            unitPrice, 
+            category
+        );
+        productContract.setPlaceOfOrigin(productId, placeOfOrigin);
+        productContract.setProductionDate(productId, productionDate);
+        productContract.setBatchQuantity(productId, batchQuantity);
+        productContract.setExpirationDate(productId, expirationDate);
+        // productContract.setCurrentLocation(productId, newLocation, newDisbatchDate, newArrivalDate);
 
-    //     rawMaterialsOwned.push(productId);
-    //     return productId;
-    // }
+
+        rawMaterialsOwned.push(productId);
+        return productId;
+    }
 
     function addRawMaterial(
         string memory name,

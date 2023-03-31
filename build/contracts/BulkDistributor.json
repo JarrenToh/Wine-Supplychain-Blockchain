@@ -1,12 +1,12 @@
 {
   "contractName": "BulkDistributor",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/BulkDistributor.sol\":\"BulkDistributor\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/BulkDistributor.sol\":{\"keccak256\":\"0xde2c8b8158e52e526a631c96d5a26fcb65310303111e47b901b0968e95c57293\",\"urls\":[\"bzz-raw://5a74376d188e72d6968d7bca77676f0cb483ee9e50ea860b7e2d31acba5cf64f\",\"dweb:/ipfs/QmcvVNxcU5g89UFv6X6RBvdsU1MdJPY1t6Lo4zhzgenQWK\"]},\"project:/contracts/Product.sol\":{\"keccak256\":\"0x4e08c1051a4844f0639d9416189ed1b4f2059106e03e8d3e4b8a80a40beb0306\",\"urls\":[\"bzz-raw://cdb219af219877c5e25bf683e5cfb2f1c38933661c7fa5958dea80352a7f3689\",\"dweb:/ipfs/Qmbd1ZmUDnCSUVdtiwsktmsZMVRQpKWZgcah4H6teEAMwc\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b50603e80601d6000396000f3fe6080604052600080fdfea265627a7a7231582056fb56915cda8b9a90731fe82be7ad7f44a4b78d22ea86f46c061aaaa602e95464736f6c63430005100032",
-  "deployedBytecode": "0x6080604052600080fdfea265627a7a7231582056fb56915cda8b9a90731fe82be7ad7f44a4b78d22ea86f46c061aaaa602e95464736f6c63430005100032",
-  "sourceMap": "50:33:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;50:33:0;;;;;;;",
-  "deployedSourceMap": "50:33:0:-;;;;;",
-  "source": "pragma solidity ^0.5.0;\n\nimport \"./Product.sol\";\n\ncontract BulkDistributor {\n    \n}",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/BulkDistributor.sol\":\"BulkDistributor\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/BulkDistributor.sol\":{\"keccak256\":\"0xacfd33153cd7f384621eb3b4e091efe1b2b0eecfc504bd99d8eea1082fe8768b\",\"urls\":[\"bzz-raw://3a7d4f122243657ca70f46c390288729e80bd3471f90dd739cc98d59ba313c8d\",\"dweb:/ipfs/QmSiQqreovrPXfjq97SfnqCs9CqdXHdkv31jCMUEzkBigx\"]},\"project:/contracts/Product.sol\":{\"keccak256\":\"0x4e08c1051a4844f0639d9416189ed1b4f2059106e03e8d3e4b8a80a40beb0306\",\"urls\":[\"bzz-raw://cdb219af219877c5e25bf683e5cfb2f1c38933661c7fa5958dea80352a7f3689\",\"dweb:/ipfs/Qmbd1ZmUDnCSUVdtiwsktmsZMVRQpKWZgcah4H6teEAMwc\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603e80601d6000396000f3fe6080604052600080fdfea265627a7a7231582075af59296338892180068b6156372493b5510661b7392bd4502c8bd5bdc4faf964736f6c63430005100032",
+  "deployedBytecode": "0x6080604052600080fdfea265627a7a7231582075af59296338892180068b6156372493b5510661b7392bd4502c8bd5bdc4faf964736f6c63430005100032",
+  "sourceMap": "50:51:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;50:51:0;;;;;;;",
+  "deployedSourceMap": "50:51:0:-;;;;;",
+  "source": "pragma solidity ^0.5.0;\n\nimport \"./Product.sol\";\n\ncontract BulkDistributor {\n\n    // function \n    \n}",
   "sourcePath": "/Users/jarrentoh/Documents/GitHub/Wine Supplychain Blockchain/contracts/BulkDistributor.sol",
   "ast": {
     "absolutePath": "project:/contracts/BulkDistributor.sol",
@@ -35,7 +35,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 4,
-        "sourceUnit": 1475,
+        "sourceUnit": 1018,
         "src": "25:23:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -54,10 +54,10 @@
         "nodeType": "ContractDefinition",
         "nodes": [],
         "scope": 4,
-        "src": "50:33:0"
+        "src": "50:51:0"
       }
     ],
-    "src": "0:83:0"
+    "src": "0:101:0"
   },
   "legacyAST": {
     "attributes": {
@@ -84,7 +84,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 1475,
+          "SourceUnit": 1018,
           "absolutePath": "project:/contracts/Product.sol",
           "file": "./Product.sol",
           "scope": 4,
@@ -119,12 +119,12 @@
         },
         "id": 3,
         "name": "ContractDefinition",
-        "src": "50:33:0"
+        "src": "50:51:0"
       }
     ],
     "id": 4,
     "name": "SourceUnit",
-    "src": "0:83:0"
+    "src": "0:101:0"
   },
   "compiler": {
     "name": "solc",
@@ -132,7 +132,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-31T14:11:26.812Z",
+  "updatedAt": "2023-03-31T14:43:27.143Z",
   "devdoc": {
     "methods": {}
   },
