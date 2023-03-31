@@ -7,7 +7,7 @@
   "sourceMap": "50:51:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;50:51:0;;;;;;;",
   "deployedSourceMap": "50:51:0:-;;;;;",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./Product.sol\";\n\ncontract BulkDistributor {\n\n    // function \n    \n}",
-  "sourcePath": "/Users/jarrentoh/Documents/GitHub/Wine Supplychain Blockchain/contracts/BulkDistributor.sol",
+  "sourcePath": "/Users/alexye/Desktop/Wine-Supplychain-Blockchain/contracts/BulkDistributor.sol",
   "ast": {
     "absolutePath": "project:/contracts/BulkDistributor.sol",
     "exportedSymbols": {
@@ -131,8 +131,8 @@
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-31T14:46:36.936Z",
+  "schemaVersion": "3.4.12",
+  "updatedAt": "2023-03-31T14:49:55.599Z",
   "devdoc": {
     "methods": {}
   },

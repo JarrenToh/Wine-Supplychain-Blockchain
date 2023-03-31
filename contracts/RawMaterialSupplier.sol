@@ -46,27 +46,6 @@ contract RawMaterialSupplier {
         return productId;
     }
 
-    function addRawMaterial(
-        string memory name,
-        uint256 unitQuantity,
-        string memory unitQuantityType,
-        uint256 batchQuantity,
-        uint256 unitPrice,
-        string memory category
-    ) public returns (uint256) {
-        uint256 productId = productContract.createProduct(
-            name,
-            address(this),
-            unitQuantity, 
-            unitQuantityType, 
-            batchQuantity, 
-            unitPrice, 
-            category
-        );
-        rawMaterialsOwned.push(productId);
-        return productId;
-    }
-      
 
     function removeRawMaterial(uint256 productId) public {
         productContract.removeProduct(productId);
@@ -79,13 +58,13 @@ contract RawMaterialSupplier {
     }
     
 
-    // function materialReadyToShip(uint256 productId, string memory newLocation) public {
-    //     require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
-    //     productContract.setReadyToShip(productId, true);
-    //     (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
-    //     // productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
-    //     productContract.setCurrentLocation(productId, newLocation, "null", "null");
-    // }
+    function materialReadyToShip(uint256 productId, string memory newLocation) public {
+        require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
+        productContract.setReadyToShip(productId, true);
+        (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
+        productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
+        productContract.setCurrentLocation(productId, newLocation, "null", "null");
+    }
 
     function disbatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress) public {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");

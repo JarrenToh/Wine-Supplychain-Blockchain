@@ -7,19 +7,19 @@
   "sourceMap": "50:28:7:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;50:28:7;;;;;;;",
   "deployedSourceMap": "50:28:7:-;;;;;",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./Product.sol\";\n\ncontract Wholesaler {\n    \n}",
-  "sourcePath": "/Users/jarrentoh/Documents/GitHub/Wine Supplychain Blockchain/contracts/Wholesaler.sol",
+  "sourcePath": "/Users/alexye/Desktop/Wine-Supplychain-Blockchain/contracts/Wholesaler.sol",
   "ast": {
     "absolutePath": "project:/contracts/Wholesaler.sol",
     "exportedSymbols": {
       "Wholesaler": [
-        2062
+        2066
       ]
     },
-    "id": 2063,
+    "id": 2067,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2060,
+        "id": 2064,
         "literals": [
           "solidity",
           "^",
@@ -32,9 +32,9 @@
       {
         "absolutePath": "project:/contracts/Product.sol",
         "file": "./Product.sol",
-        "id": 2061,
+        "id": 2065,
         "nodeType": "ImportDirective",
-        "scope": 2063,
+        "scope": 2067,
         "sourceUnit": 1475,
         "src": "25:23:7",
         "symbolAliases": [],
@@ -46,14 +46,14 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 2062,
+        "id": 2066,
         "linearizedBaseContracts": [
-          2062
+          2066
         ],
         "name": "Wholesaler",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 2063,
+        "scope": 2067,
         "src": "50:28:7"
       }
     ],
@@ -64,7 +64,7 @@
       "absolutePath": "project:/contracts/Wholesaler.sol",
       "exportedSymbols": {
         "Wholesaler": [
-          2062
+          2066
         ]
       }
     },
@@ -78,7 +78,7 @@
             ".0"
           ]
         },
-        "id": 2060,
+        "id": 2064,
         "name": "PragmaDirective",
         "src": "0:23:7"
       },
@@ -87,13 +87,13 @@
           "SourceUnit": 1475,
           "absolutePath": "project:/contracts/Product.sol",
           "file": "./Product.sol",
-          "scope": 2063,
+          "scope": 2067,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 2061,
+        "id": 2065,
         "name": "ImportDirective",
         "src": "25:23:7"
       },
@@ -109,20 +109,20 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            2062
+            2066
           ],
           "name": "Wholesaler",
           "nodes": [
             null
           ],
-          "scope": 2063
+          "scope": 2067
         },
-        "id": 2062,
+        "id": 2066,
         "name": "ContractDefinition",
         "src": "50:28:7"
       }
     ],
-    "id": 2063,
+    "id": 2067,
     "name": "SourceUnit",
     "src": "0:78:7"
   },
@@ -131,8 +131,8 @@
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-31T14:46:36.964Z",
+  "schemaVersion": "3.4.12",
+  "updatedAt": "2023-03-31T14:49:55.613Z",
   "devdoc": {
     "methods": {}
   },
