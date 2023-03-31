@@ -65,12 +65,9 @@ contract RawMaterialSupplier {
     }
     
 
-    function materialReadyToShip(uint256 productId, string memory newLocation) public ownerOnly(productId) {
+    function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
         productContract.setReadyToShip(productId, true);
-        (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
-        productContract.setCurrentLocation(productId, newLocation, "", "");
     }
 
     function disbatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {

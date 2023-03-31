@@ -58,6 +58,11 @@ contract BulkDistributor {
         emit wineReceived(productId);
     }
 
+    function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
+        require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
+        productContract.setReadyToShip(productId, true);
+    }
+
     //dispatch to Transit Cellar
     function disbatchWineToTransitCellar(uint256 productId, string memory newDisbatchDate, address transitCellarAddress, address transitCellarContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
