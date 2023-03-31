@@ -44,6 +44,26 @@ contract RawMaterialSupplier {
     //     return productId;
     // }
 
+function addRawMaterial(
+    string memory name,
+    uint256 unitQuantity,
+    string memory unitQuantityType,
+    uint256 batchQuantity,
+    uint256 unitPrice,
+    string memory category
+) public returns (uint256) {
+    uint256 productId = productContract.createProduct(
+        name,
+        address(this),
+        unitQuantity, 
+        unitQuantityType, 
+        batchQuantity, 
+        unitPrice, 
+        category
+    );
+    rawMaterialsOwned.push(productId);
+    return productId;
+}
       
 
     function removeRawMaterial(uint256 productId) public {

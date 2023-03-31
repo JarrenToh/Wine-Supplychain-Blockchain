@@ -1,9 +1,9 @@
 {
   "contractName": "Wholesaler",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Wholesaler.sol\":\"Wholesaler\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Product.sol\":{\"keccak256\":\"0xb334adcd69d4e6ed0ced671deb02cc44724a64f3bf37c13acefcc53b34acb648\",\"urls\":[\"bzz-raw://95f26492c9e4528b18536cae673c856f790c486951c52777de11f69005e0a12e\",\"dweb:/ipfs/QmXJo18VWaC7S5DYs2UBXwxJNdtQ8AK7RiBrKQfQQiZpvH\"]},\"project:/contracts/Wholesaler.sol\":{\"keccak256\":\"0xc578dfd14f4e14a06d7bdabbd7b04914ae61a4e48f6eff2d82ebd2e77752ecde\",\"urls\":[\"bzz-raw://36d402c1b21c965288e189d937ba30c402c3062ad2243045050f8e15f51f36cf\",\"dweb:/ipfs/QmPyzkq7otxnWsa3mYoAmvF3vdRebngtNcpGp4m5C96Zs8\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b50603e80601d6000396000f3fe6080604052600080fdfea265627a7a72315820f4facd5e470e11c2367be541b1ece576fa2979edfa898da6048c06f23d3ac68364736f6c63430005100032",
-  "deployedBytecode": "0x6080604052600080fdfea265627a7a72315820f4facd5e470e11c2367be541b1ece576fa2979edfa898da6048c06f23d3ac68364736f6c63430005100032",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.16+commit.9c3226ce\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Wholesaler.sol\":\"Wholesaler\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Product.sol\":{\"keccak256\":\"0x4e08c1051a4844f0639d9416189ed1b4f2059106e03e8d3e4b8a80a40beb0306\",\"urls\":[\"bzz-raw://cdb219af219877c5e25bf683e5cfb2f1c38933661c7fa5958dea80352a7f3689\",\"dweb:/ipfs/Qmbd1ZmUDnCSUVdtiwsktmsZMVRQpKWZgcah4H6teEAMwc\"]},\"project:/contracts/Wholesaler.sol\":{\"keccak256\":\"0xc578dfd14f4e14a06d7bdabbd7b04914ae61a4e48f6eff2d82ebd2e77752ecde\",\"urls\":[\"bzz-raw://36d402c1b21c965288e189d937ba30c402c3062ad2243045050f8e15f51f36cf\",\"dweb:/ipfs/QmPyzkq7otxnWsa3mYoAmvF3vdRebngtNcpGp4m5C96Zs8\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603e80601d6000396000f3fe6080604052600080fdfea265627a7a7231582068a91d21dbb825f79fe09bc9769489e27de1421c95a66627ab274a13278f30e864736f6c63430005100032",
+  "deployedBytecode": "0x6080604052600080fdfea265627a7a7231582068a91d21dbb825f79fe09bc9769489e27de1421c95a66627ab274a13278f30e864736f6c63430005100032",
   "sourceMap": "50:28:7:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;50:28:7;;;;;;;",
   "deployedSourceMap": "50:28:7:-;;;;;",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./Product.sol\";\n\ncontract Wholesaler {\n    \n}",
@@ -12,14 +12,14 @@
     "absolutePath": "project:/contracts/Wholesaler.sol",
     "exportedSymbols": {
       "Wholesaler": [
-        1039
+        1976
       ]
     },
-    "id": 1040,
+    "id": 1977,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1037,
+        "id": 1974,
         "literals": [
           "solidity",
           "^",
@@ -32,10 +32,10 @@
       {
         "absolutePath": "project:/contracts/Product.sol",
         "file": "./Product.sol",
-        "id": 1038,
+        "id": 1975,
         "nodeType": "ImportDirective",
-        "scope": 1040,
-        "sourceUnit": 1030,
+        "scope": 1977,
+        "sourceUnit": 1475,
         "src": "25:23:7",
         "symbolAliases": [],
         "unitAlias": ""
@@ -46,14 +46,14 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 1039,
+        "id": 1976,
         "linearizedBaseContracts": [
-          1039
+          1976
         ],
         "name": "Wholesaler",
         "nodeType": "ContractDefinition",
         "nodes": [],
-        "scope": 1040,
+        "scope": 1977,
         "src": "50:28:7"
       }
     ],
@@ -64,7 +64,7 @@
       "absolutePath": "project:/contracts/Wholesaler.sol",
       "exportedSymbols": {
         "Wholesaler": [
-          1039
+          1976
         ]
       }
     },
@@ -78,22 +78,22 @@
             ".0"
           ]
         },
-        "id": 1037,
+        "id": 1974,
         "name": "PragmaDirective",
         "src": "0:23:7"
       },
       {
         "attributes": {
-          "SourceUnit": 1030,
+          "SourceUnit": 1475,
           "absolutePath": "project:/contracts/Product.sol",
           "file": "./Product.sol",
-          "scope": 1040,
+          "scope": 1977,
           "symbolAliases": [
             null
           ],
           "unitAlias": ""
         },
-        "id": 1038,
+        "id": 1975,
         "name": "ImportDirective",
         "src": "25:23:7"
       },
@@ -109,20 +109,20 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            1039
+            1976
           ],
           "name": "Wholesaler",
           "nodes": [
             null
           ],
-          "scope": 1040
+          "scope": 1977
         },
-        "id": 1039,
+        "id": 1976,
         "name": "ContractDefinition",
         "src": "50:28:7"
       }
     ],
-    "id": 1040,
+    "id": 1977,
     "name": "SourceUnit",
     "src": "0:78:7"
   },
@@ -132,7 +132,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.11",
-  "updatedAt": "2023-03-31T13:13:02.606Z",
+  "updatedAt": "2023-03-31T14:11:26.839Z",
   "devdoc": {
     "methods": {}
   },

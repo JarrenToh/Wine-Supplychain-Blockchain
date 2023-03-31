@@ -57,18 +57,61 @@ contract Product {
     }
 
     //methods
+    // function createProduct(
+    //     string memory name,
+    //     address currentContractAddress,
+    //     string memory placeOfOrigin,
+    //     string memory productionDate,
+    //     string memory expirationDate,
+    //     uint256 unitQuantity,
+    //     string memory unitQuantityType,
+    //     uint256 batchQuantity,
+    //     uint256 unitPrice,
+    //     string memory category,
+    //     string memory currentPhysicalLocation
+    // ) public returns (uint256) {
+    //     require(bytes(name).length > 0, "Name cannot be empty");
+
+    //     //create new product
+    //     uint256 newProductId = noProduct++;
+    //     products[newProductId] = product({
+    //         componentProductIds: new uint256[](0),
+    //         productId: newProductId,
+    //         name: name,
+    //         currentOwner: msg.sender,
+    //         currentContractAddress: currentContractAddress,
+    //         previousOwner: address(0),
+    //         previousContractAddress: address(0),
+    //         placeOfOrigin: placeOfOrigin,
+    //         productionDate: productionDate,
+    //         expirationDate: expirationDate,
+    //         unitQuantity: unitQuantity,
+    //         unitQuantityType: unitQuantityType,
+    //         batchQuantity: batchQuantity,
+    //         unitPrice: unitPrice,
+    //         category: category,
+    //         received: false,
+    //         used: false,
+    //         previousLocationIds: new uint256[](0),
+    //         currentLocation: productLocation({
+    //             location: currentPhysicalLocation,
+    //             disbatchDate: "null",
+    //             arrivalDate: "null"
+    //         }),
+    //         readyToShip: false
+    //     });
+    //     emit ProductCreated(newProductId, name, msg.sender);
+    //     return newProductId;
+    // }
+
     function createProduct(
         string memory name,
         address currentContractAddress,
-        string memory placeOfOrigin,
-        string memory productionDate,
-        string memory expirationDate,
         uint256 unitQuantity,
         string memory unitQuantityType,
         uint256 batchQuantity,
         uint256 unitPrice,
-        string memory category,
-        string memory currentPhysicalLocation
+        string memory category
     ) public returns (uint256) {
         require(bytes(name).length > 0, "Name cannot be empty");
 
@@ -82,9 +125,9 @@ contract Product {
             currentContractAddress: currentContractAddress,
             previousOwner: address(0),
             previousContractAddress: address(0),
-            placeOfOrigin: placeOfOrigin,
-            productionDate: productionDate,
-            expirationDate: expirationDate,
+            placeOfOrigin: "",
+            productionDate: "",
+            expirationDate: "",
             unitQuantity: unitQuantity,
             unitQuantityType: unitQuantityType,
             batchQuantity: batchQuantity,
@@ -94,7 +137,7 @@ contract Product {
             used: false,
             previousLocationIds: new uint256[](0),
             currentLocation: productLocation({
-                location: currentPhysicalLocation,
+                location: "",
                 disbatchDate: "null",
                 arrivalDate: "null"
             }),
@@ -335,7 +378,8 @@ contract Product {
         );
         return (
             location[products[productId].previousLocationIds[index]].location,
-            location[products[productId].previousLocationIds[index]].disbatchDate,
+            location[products[productId].previousLocationIds[index]]
+                .disbatchDate,
             location[products[productId].previousLocationIds[index]].arrivalDate
         );
     }
@@ -348,10 +392,10 @@ contract Product {
     ) public ownerOnly(productId) validProductId(productId) {
         uint256 newLocationId = noLocation++;
         location[newLocationId] = productLocation({
-                location: prevLocation,
-                disbatchDate: prevDisbatchDate,
-                arrivalDate: prevArrivalDate
-            });
+            location: prevLocation,
+            disbatchDate: prevDisbatchDate,
+            arrivalDate: prevArrivalDate
+        });
         products[productId].previousLocationIds.push(newLocationId);
     }
 
