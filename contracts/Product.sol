@@ -138,8 +138,8 @@ contract Product {
             previousLocationIds: new uint256[](0),
             currentLocation: productLocation({
                 location: "",
-                disbatchDate: "null",
-                arrivalDate: "null"
+                disbatchDate: "",
+                arrivalDate: ""
             }),
             readyToShip: false
         });

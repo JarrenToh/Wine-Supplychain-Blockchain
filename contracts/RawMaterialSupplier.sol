@@ -20,8 +20,8 @@ contract RawMaterialSupplier {
         string memory unitQuantityType,
         uint256 batchQuantity,
         uint256 unitPrice,
-        string memory category
-        // string memory currentPhysicalLocation
+        string memory category,
+        string memory currentPhysicalLocation
 
     ) public returns (uint256) {
 
@@ -39,7 +39,7 @@ contract RawMaterialSupplier {
         productContract.setProductionDate(productId, productionDate);
         productContract.setBatchQuantity(productId, batchQuantity);
         productContract.setExpirationDate(productId, expirationDate);
-        // productContract.setCurrentLocation(productId, newLocation, newDisbatchDate, newArrivalDate);
+        productContract.setCurrentLocation(productId, currentPhysicalLocation, "", "");
 
 
         rawMaterialsOwned.push(productId);
