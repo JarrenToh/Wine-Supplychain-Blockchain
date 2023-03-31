@@ -25,8 +25,8 @@ contract WineProducer {
     ) public payable returns(uint256) {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent balance to buy the supply");
-        // address payable targetAddress = payable(productContract.getCurrentOwner(productId));
-        // targetAddress.transfer(productPrice);
+        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        targetAddress.transfer(productPrice);
 
         rawMaterialSupplierContract.disbatchRawMaterial(
             productId, 
