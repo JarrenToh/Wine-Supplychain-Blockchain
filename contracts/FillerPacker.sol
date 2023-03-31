@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0;
+pragma solidity ^0.5.0;
 
 import "./Product.sol";
 
@@ -27,9 +27,9 @@ contract FillerPacker {
     // }
 
     //methods
-    function getOwner() public view returns(address) {
-       return owner;
-    }
+    // function getOwner() public view returns(address) {
+    //    return owner;
+    // }
 
     function getPackagingDetails(uint256 productId) public view returns(string memory) {
        return packagingDetails[productId];
@@ -39,9 +39,9 @@ contract FillerPacker {
        return labelDetails[productId];
     }
 
-    function getDispatchDetails(uint256 productId) public view  returns(string memory) {
-       return dispatchDates[productId];
-    }
+    // function getDispatchDetails(uint256 productId) public view  returns(string memory) {
+    //    return dispatchDates[productId];
+    // }
 
     function receiveWineFromTransitCellar(uint256 productId, string memory currentLocation, string memory arrivalDate) public ownerOnly(productId) {
         (string memory location, string memory dispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
@@ -63,15 +63,15 @@ contract FillerPacker {
         emit wineLabelled(productId);
     }
 
-    function dispatchWineToGoodsDistributor(uint256 productId, string memory labelDetail, string memory dispatchDate, address newOwner, address newContractAddress) public ownerOnly(productId) {
-        (string memory location, string memory prevDispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
-        productContract.setCurrentLocation(productId, "", "", "");
+    // function dispatchWineToGoodsDistributor(uint256 productId, string memory labelDetail, string memory dispatchDate, address newOwner, address newContractAddress) public ownerOnly(productId) {
+    //     (string memory location, string memory prevDispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
+    //     productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
+    //     productContract.setCurrentLocation(productId, "", "", "");
         
-        productContract.transferProduct(productId, newOwner, newContractAddress);
+    //     productContract.transferProduct(productId, newOwner, newContractAddress);
 
-        productContract.setReceived(productId, false);
+    //     productContract.setReceived(productId, false);
         
-        emit wineDispatched(productId);
-    }
+    //     emit wineDispatched(productId);
+    // }
 }

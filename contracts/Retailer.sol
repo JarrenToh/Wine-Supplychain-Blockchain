@@ -70,42 +70,42 @@ contract Retailer {
         }
     }
 
-    function receiveWineBatchFromWholeSaler(
-        uint256 wineBatchId,
-        address retailer,
-        string memory newLocation,
-        string memory newDisbatchDate,
-        string memory newExpectedArrivalDate,
-        string memory newArrivalDate,
-        string memory prevLocation, 
-        string memory prevDisbatchDate, 
-        string memory prevExpectedArrivalDate, 
-        string memory prevArrivalDate
-    ) public payable {
-        require(
-            msg.value == productContract.getUnitPrice(wineBatchId),
-            "Insufficient payment!"
-        );
-        //fillerPackerContract.sendWineToGoodsDistributor(wineBatchId);
-        productContract.setCurrentLocation(
-            wineBatchId,
-            newLocation,
-            newDisbatchDate,
-            newExpectedArrivalDate,
-            newArrivalDate
-        );
-        productContract.addPreviousLocation(
-            wineBatchId,
-            prevLocation,
-            prevDisbatchDate,
-            prevExpectedArrivalDate,
-            prevArrivalDate
-        );
-        productContract.setCurrentContractAddress(wineBatchId, address(this));
-        productContract.setReceived(wineBatchId, true);
-        wineRemainingInBatch[wineBatchId] = productContract.getBatchQuantity(wineBatchId);
-        emit receivedWineBatch(wineBatchId, retailer);
-    }
+    // function receiveWineBatchFromWholeSaler(
+    //     uint256 wineBatchId,
+    //     address retailer,
+    //     string memory newLocation,
+    //     string memory newDisbatchDate,
+    //     string memory newExpectedArrivalDate,
+    //     string memory newArrivalDate,
+    //     string memory prevLocation, 
+    //     string memory prevDisbatchDate, 
+    //     string memory prevExpectedArrivalDate, 
+    //     string memory prevArrivalDate
+    // ) public payable {
+    //     require(
+    //         msg.value == productContract.getUnitPrice(wineBatchId),
+    //         "Insufficient payment!"
+    //     );
+    //     //fillerPackerContract.sendWineToGoodsDistributor(wineBatchId);
+    //     productContract.setCurrentLocation(
+    //         wineBatchId,
+    //         newLocation,
+    //         newDisbatchDate,
+    //         newExpectedArrivalDate,
+    //         newArrivalDate
+    //     );
+    //     productContract.addPreviousLocation(
+    //         wineBatchId,
+    //         prevLocation,
+    //         prevDisbatchDate,
+    //         prevExpectedArrivalDate,
+    //         prevArrivalDate
+    //     );
+    //     productContract.setCurrentContractAddress(wineBatchId, address(this));
+    //     productContract.setReceived(wineBatchId, true);
+    //     wineRemainingInBatch[wineBatchId] = productContract.getBatchQuantity(wineBatchId);
+    //     emit receivedWineBatch(wineBatchId, retailer);
+    // }
 
     function sellWineFromBatch(uint256 wineBatchId, address retailer) public {
         wineRemainingInBatch[wineBatchId] = wineRemainingInBatch[wineBatchId] - 1;
