@@ -39,6 +39,11 @@ contract Wholesaler {
 
     // }
 
+    function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
+        require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
+        productContract.setReadyToShip(productId, true);
+    }
+
     //Receive From Filler/Packer
     function receiveWine(
         uint256 productId,
