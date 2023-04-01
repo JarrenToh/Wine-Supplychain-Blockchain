@@ -11,13 +11,13 @@ const Retailer = artifacts.require("Retailer");
 module.exports = function(deployer, network, accounts) {
   deployer.deploy(Product)
   .then(function() {
-    return deployer.deploy(RawMaterialSupplier);
+    return deployer.deploy(RawMaterialSupplier, Product.address);
   })
   .then(function() {
-    return deployer.deploy(WineProducer);
+    return deployer.deploy(WineProducer, Product.address, RawMaterialSupplier.address);
   })
   .then(function() {
-    return deployer.deploy(BulkDistributor);
+    return deployer.deploy(BulkDistributor, Product.address, WineProducer.address);
   })
   .then(function() {
     return deployer.deploy(TransitCellar);
@@ -29,7 +29,7 @@ module.exports = function(deployer, network, accounts) {
     return deployer.deploy(GoodDistributor);
   })
   .then(function() {
-    return deployer.deploy(Wholesaler);
+    return deployer.deploy(Wholesaler, Product.address, GoodDistributor.address);
   })
   .then(function() {
     return deployer.deploy(Retailer);

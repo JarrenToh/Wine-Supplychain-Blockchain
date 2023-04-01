@@ -47,7 +47,7 @@ contract Product {
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
-        require(products[productId].currentOwner == msg.sender);
+        require(products[productId].currentOwner == tx.origin);
         _;
     }
 
