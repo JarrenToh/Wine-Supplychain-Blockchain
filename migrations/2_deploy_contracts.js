@@ -20,10 +20,10 @@ module.exports = function(deployer, network, accounts) {
     return deployer.deploy(BulkDistributor, Product.address, WineProducer.address);
   })
   .then(function() {
-    return deployer.deploy(TransitCellar);
+    return deployer.deploy(TransitCellar, Product.address, BulkDistributor.address);
   })
   .then(function() {
-    return deployer.deploy(FillerPacker);
+    return deployer.deploy(FillerPacker, Product.address, TransitCellar.address);
   })
   .then(function() {
     return deployer.deploy(GoodDistributor);
