@@ -1,114 +1,62 @@
 pragma solidity ^0.5.0;
 
 import "./Product.sol";
+import "./WholeSaler.sol";
 
 contract Retailer {
 
-    event soldWine(uint256 wineBatchId, address retailer);
-    event addedRetailer(uint256 retailerId);
-    event removedRetailer(uint256 retailerId);
-    event receivedWineBatch(uint256 wineBatchId, address retailer);
-
     Product productContract;
-    uint256 public numOfRetailers = 0;
+    Wholesaler wholeSalerContract;
+
+    event soldWine(uint256 wineBatchId);
+    event buyWineBatch(uint256 wineBatchId);
+    event wineBatchReceived(uint256 wineBatchId);
+
     mapping(uint256 => uint256) public wineRemainingInBatch;
-    mapping(uint256 => address) public retailers; //mapping id of retailers to their addresses
 
-    //function to add a new retailer
-    function addRetailer(
-        address accountNumber
-    ) public returns (uint256) {
-        require(
-            checkRetailerExist(accountNumber) == false,
-            "Retailer already exist!"
-        );
-        retailers[numOfRetailers] = accountNumber;
-        emit addedRetailer(numOfRetailers);
-        numOfRetailers += 1;
+    //modifiers
+    modifier ownerOnly(uint256 productId) {
+        require(productContract.getCurrentOwner(productId) == msg.sender);
+        _;
     }
 
-    //check whether goods distributor already exist. Returns true if exist and false otherwise
-    function checkRetailerExist(
-        address accountNumber
-    ) public view returns (bool) {
-        if (numOfRetailers > 0) {
-            for (uint i = 0; i <= numOfRetailers; i++) {
-                if (retailers[i] == accountNumber) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    constructor(Product productAddress, Wholesaler wholeSalerAddress) public {
+        productContract = productAddress;
+        wholeSalerContract = wholeSalerAddress;
     }
 
-    function removeRetailer(
-        address accountNumber
-    ) public returns (bool) {
-        require(
-            checkRetailerExist(accountNumber) == true,
-            "Retailer does not exist!"
-        );
-        uint256 removedId = 0;
-        for (uint i = 0; i <= numOfRetailers; i++) {
-            if (retailers[i] == accountNumber) {
-                retailers[i] = address(0);
-                removedId = i;
-                break;
-            }
-        }
-        emit removedRetailer(removedId);
+    //buy wine batch from wholesaler
+    function buyWineFromWholesaler(uint256 productId, string memory dispatchDate) public payable {
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value > productPrice, "Insufficent amount to buy the wine batch");
+        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        wholeSalerContract.disbatchWineToRetailer(productId, dispatchDate, msg.sender, address(this));
+        emit buyWineBatch(productId);
     }
 
-    function isGoodsDistributor(
-        address accountNumber
-    ) public view returns (bool) {
-        bool exist = checkRetailerExist(accountNumber);
-        if (exist) {
-            return true;
-        } else {
-            return false;
-        }
+    //Receive From fillerpacker
+    function receiveWine(
+        uint256 productId,
+        string memory currentLocation,
+        string memory arrivalDate
+    ) public ownerOnly(productId) {
+        require(productContract.getReceived(productId) == false);
+        require(productContract.getCurrentContractAddress(productId) == address(this));
+        require(productContract.getReadyToShip(productId) == true);
+        (string memory location, string memory dispatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
+        productContract.addPreviousLocation(productId, location, dispatchDate, prevArrivalDate);
+        productContract.setCurrentLocation(productId, currentLocation, "", arrivalDate);
+
+        productContract.setReceived(productId, true);
+        productContract.setReadyToShip(productId, false);
+
+        emit wineBatchReceived(productId);
     }
 
-    // function receiveWineBatchFromWholeSaler(
-    //     uint256 wineBatchId,
-    //     address retailer,
-    //     string memory newLocation,
-    //     string memory newDisbatchDate,
-    //     string memory newExpectedArrivalDate,
-    //     string memory newArrivalDate,
-    //     string memory prevLocation, 
-    //     string memory prevDisbatchDate, 
-    //     string memory prevExpectedArrivalDate, 
-    //     string memory prevArrivalDate
-    // ) public payable {
-    //     require(
-    //         msg.value == productContract.getUnitPrice(wineBatchId),
-    //         "Insufficient payment!"
-    //     );
-    //     //fillerPackerContract.sendWineToGoodsDistributor(wineBatchId);
-    //     productContract.setCurrentLocation(
-    //         wineBatchId,
-    //         newLocation,
-    //         newDisbatchDate,
-    //         newExpectedArrivalDate,
-    //         newArrivalDate
-    //     );
-    //     productContract.addPreviousLocation(
-    //         wineBatchId,
-    //         prevLocation,
-    //         prevDisbatchDate,
-    //         prevExpectedArrivalDate,
-    //         prevArrivalDate
-    //     );
-    //     productContract.setCurrentContractAddress(wineBatchId, address(this));
-    //     productContract.setReceived(wineBatchId, true);
-    //     wineRemainingInBatch[wineBatchId] = productContract.getBatchQuantity(wineBatchId);
-    //     emit receivedWineBatch(wineBatchId, retailer);
-    // }
-
-    function sellWineFromBatch(uint256 wineBatchId, address retailer) public {
-        wineRemainingInBatch[wineBatchId] = wineRemainingInBatch[wineBatchId] - 1;
-        emit soldWine(wineBatchId, retailer);
+    function sellWine(uint256 productId, uint256 quantity) public {
+        wineRemainingInBatch[productId] -= quantity;
     }
+
 }
