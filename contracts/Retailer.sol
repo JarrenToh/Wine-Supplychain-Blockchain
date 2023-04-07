@@ -11,6 +11,8 @@ contract Retailer {
     event soldWine(uint256 wineBatchId);
     event buyWineBatch(uint256 wineBatchId);
     event wineBatchReceived(uint256 wineBatchId);
+    event wineBatchRemoved(uint256 wineBatchId);
+    event returnedWineBatch(uint256 wineBatchId);
 
     mapping(uint256 => uint256) public wineRemainingInBatch;
 
@@ -57,6 +59,21 @@ contract Retailer {
 
     function sellWine(uint256 productId, uint256 quantity) public {
         wineRemainingInBatch[productId] -= quantity;
+    }
+
+    function removeWineBatch(uint256 productId) public ownerOnly(productId) {
+        productContract.removeProduct(productId);
+        emit wineBatchRemoved(productId);
+    }
+
+    function returnWineBatch(uint256 productId) public ownerOnly(productId) {
+        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
+        productContract.setPreviousOwner(productId, msg.sender);
+        productContract.setCurrentOwner(productId, productContract.getPreviousOwner(productId));
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
+
+        emit returnedWineBatch(productId);
     }
 
 }
