@@ -22,6 +22,7 @@ contract TransitCellar {
     event wineAnalysed(uint productId); 
     event wineDispatched(uint productId);
     event wineReturned(uint productId);
+    event wineRemoved(uint productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -77,6 +78,12 @@ contract TransitCellar {
         productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
 
         emit wineReturned(productId);
+    }
+
+    //Remove wine from products
+    function removeWine(uint256 productId) public ownerOnly(productId) {
+        productContract.removeProduct(productId);
+        emit wineRemoved(productId);
     }
 
     //Analyse wine and store analysis details
