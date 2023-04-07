@@ -30,26 +30,29 @@ The actors in the supply chain are as follows:
 
 The following functions are available for each actor in the supply chain:
 
-### GrapeGrower
+### RawMaterialSupplier.sol
 
 
 
-### WineProducer
+### WineProducer.sol
 
 
-### BulkDistributor
+### BulkDistributor.sol
 
 
-### Filler/Packer
+### TransitCellar.sol
 
 
-### GoodsDistributor
+### FillerPacker.sol
 
 
-### Wholesaler
+### GoodsDistributor.sol
 
 
-### Retailer
+### Wholesaler.sol
+
+
+### Retailer.sol
 
 
 ## Deployment
