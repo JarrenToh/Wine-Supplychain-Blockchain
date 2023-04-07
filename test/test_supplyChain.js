@@ -88,5 +88,4 @@ contract('SupplyChain', function (accounts) {
 
     });
 
-
 })
