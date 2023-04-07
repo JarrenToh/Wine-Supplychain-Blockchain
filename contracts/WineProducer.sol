@@ -67,7 +67,7 @@ contract WineProducer {
 
     //Setting of location is unncessary because the returned products would not be of used anymore in the supplychain.
 
-    function returnWine(uint256 productId) public payable ownerOnly(productId) {
+    function returnWine(uint256 productId) public payable {
 
         require(productContract.getReceived(productId) == true, "Wine is not yet received for return");
         require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");

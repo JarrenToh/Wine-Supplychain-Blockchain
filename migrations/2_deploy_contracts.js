@@ -26,12 +26,12 @@ module.exports = function(deployer, network, accounts) {
     return deployer.deploy(FillerPacker, Product.address, TransitCellar.address);
   })
   .then(function() {
-    return deployer.deploy(GoodDistributor);
+    return deployer.deploy(GoodDistributor, Product.address, FillerPacker.address);
   })
   .then(function() {
     return deployer.deploy(Wholesaler, Product.address, GoodDistributor.address);
   })
   .then(function() {
-    return deployer.deploy(Retailer);
+    return deployer.deploy(Retailer, Product.address, Wholesaler.address);
   });
 };
