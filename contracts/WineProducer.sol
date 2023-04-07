@@ -6,7 +6,6 @@ import "./RawMaterialSupplier.sol";
 contract WineProducer {
     Product productContract;
     RawMaterialSupplier rawMaterialSupplierContract;
-    uint256[] wineOwned;
     address wineProducerAddress = msg.sender;
     constructor(Product productContractddress, RawMaterialSupplier supplierContractAddress) public {
         productContract = productContractddress;
@@ -17,7 +16,7 @@ contract WineProducer {
     event buyRawMaterial(uint productId);
     event processedWine(uint productId);
     event wineRemoved(uint productId);
-    event returnedRawMaterial(uint productId);
+    event returnedWine(uint productId);
     event WineReadyToShip(uint productId);
     event WineDisbatched(uint productId);
     event rawMaterialReceived(uint productId);
@@ -62,26 +61,29 @@ contract WineProducer {
 
     function removeWine(uint256 productId) public ownerOnly(productId) {
         productContract.removeProduct(productId);
-        for (uint256 i = 0; i < wineOwned.length; i++) {
-            if (wineOwned[i] == productId) {
-                delete wineOwned[i];
-                break;
-            }
-        }
         emit wineRemoved(productId);
     }
 
 
     //Setting of location is unncessary because the returned products would not be of used anymore in the supplychain.
 
-    function returnRawMaterials(uint256 productId) public ownerOnly(productId) {
-        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
-        productContract.setPreviousOwner(productId, msg.sender);
-        productContract.setCurrentOwner(productId, productContract.getPreviousOwner(productId));
+    function returnWine(uint256 productId) public payable ownerOnly(productId) {
+
+        require(productContract.getReceived(productId) == true, "Wine is not yet received for return");
+        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
+
+        //Transfer back the amt
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value >= productPrice, "Insufficent amount for refund");
+        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setCurrentOwner(productId, msg.sender);
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
 
-        emit returnedRawMaterial(productId);
+        emit returnedWine(productId);
     }
 
 
@@ -143,7 +145,6 @@ contract WineProducer {
             productContract.addComponentProduct(wineProductId, productId);
         }
 
-        wineOwned.push(wineProductId);
     
 
         //Use up all the materials

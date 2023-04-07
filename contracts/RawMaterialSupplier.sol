@@ -5,7 +5,6 @@ import "./Product.sol";
 contract RawMaterialSupplier {
     Product productContract;
     address rawMaterialSupplierContractOwner = msg.sender;
-    uint256[] rawMaterialsOwned;
     constructor(Product productContractddress) public {
         productContract = productContractddress;
     }
@@ -15,6 +14,8 @@ contract RawMaterialSupplier {
     event rawMaterialRemoved(uint productId);
     event rawMaterialReadyToShip(uint productId);
     event rawMaterialDisbatched(uint productId);
+    event returnedRawMaterial(uint productId);
+    
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -54,21 +55,34 @@ contract RawMaterialSupplier {
         productContract.setExpirationDate(productId, expirationDate);
         productContract.setCurrentLocation(productId, currentPhysicalLocation, "", "");
 
-
-        rawMaterialsOwned.push(productId);
         emit rawMaterialAdded(productId);
         return productId;
     }
 
 
+    function returnRawMaterials(uint256 productId) public payable ownerOnly(productId) {
+
+        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
+        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
+
+        //Transfer back the amt
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value >= productPrice, "Insufficent amount for refund");
+        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setCurrentOwner(productId, msg.sender);
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
+
+        emit returnedRawMaterial(productId);
+    }
+
+
     function removeRawMaterial(uint256 productId) public ownerOnly(productId) {
         productContract.removeProduct(productId);
-        for (uint256 i = 0; i < rawMaterialsOwned.length; i++) {
-            if (rawMaterialsOwned[i] == productId) {
-                delete rawMaterialsOwned[i];
-                break;
-            }
-        }
+
         emit rawMaterialRemoved(productId);
     }
     
