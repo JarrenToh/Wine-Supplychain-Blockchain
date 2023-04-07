@@ -23,6 +23,7 @@ contract FillerPacker {
     event winePackaged(uint productId); 
     event wineLabelled(uint productId); 
     event wineDispatched(uint productId);
+    event wineReturned(uint productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -67,6 +68,25 @@ contract FillerPacker {
         productContract.setReadyToShip(productId, false);
         
         emit wineReceived(productId);
+    }
+
+     //Return wine to bulk distributor
+     function returnWine(uint256 productId) public payable {
+
+        require(productContract.getReceived(productId) == true, "Wine is not yet received for return");
+        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
+
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value >= productPrice, "Insufficent amount for refund");
+        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setCurrentOwner(productId, msg.sender);
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
+
+        emit wineReturned(productId);
     }
 
     //Package wine and store packaging details
