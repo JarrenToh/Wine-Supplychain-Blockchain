@@ -9,7 +9,7 @@ var WineProducer = artifacts.require("../contracts/WineProducer.sol");
 var BulkDistributor = artifacts.require("../contracts/BulkDistributor.sol");
 var TransitCellar = artifacts.require("../contracts/TransitCellar.sol");
 var FillerPacker = artifacts.require("../contracts/FillerPacker.sol");
-var GoodDistributor = artifacts.require("../contracts/GoodDistributor.sol");
+var GoodDistributor = artifacts.require("../contracts/GoodsDistributor.sol");
 var Wholesaler = artifacts.require("../contracts/Wholesaler.sol");
 var Retailer = artifacts.require("../contracts/Retailer.sol");
 
