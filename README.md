@@ -11,12 +11,19 @@ Visual Studio Code: Integrated Development Environment
 The actors in the supply chain are as follows:
 
   GrapeGrower: This actor is responsible for growing and harvesting the grapes that will be used to produce wine.
+  
   WineProducer: This actor is responsible for transforming the grapes into wine, including fermentation and aging.
+  
   BulkDistributor: This actor is responsible for transporting the wine from the wine producer to the transit cellar, where it will be stored temporarily.
+  
   TransitCellar: This actor is responsible for storing the wine temporarily until it is ready to be packaged and distributed.
+  
   Filler/Packer: This actor is responsible for filling and packaging the wine for distribution.
+  
   GoodsDistributor: This actor is responsible for transporting the packaged wine from the filler/packer to the wholesaler.
+  
   Wholesaler: This actor is responsible for distributing the wine to retailers.
+  
   Retailer: This actor is responsible for selling the wine to end customers.
 
 ## Functions
