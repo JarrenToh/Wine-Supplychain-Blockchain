@@ -4,7 +4,9 @@ This smart contract is designed to implement a supply chain for the production a
 ## Requirement
 
 Ganache: A personal blockchain for Ethereum development.
+
 Truffle: A development framework for building and deploying smart contracts.
+
 Visual Studio Code: Integrated Development Environment
 
 ## Actors
