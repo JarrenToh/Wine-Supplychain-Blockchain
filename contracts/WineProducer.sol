@@ -6,11 +6,21 @@ import "./RawMaterialSupplier.sol";
 contract WineProducer {
     Product productContract;
     RawMaterialSupplier rawMaterialSupplierContract;
+    uint256[] wineOwned;
     address wineProducerAddress = msg.sender;
     constructor(Product productContractddress, RawMaterialSupplier supplierContractAddress) public {
         productContract = productContractddress;
         rawMaterialSupplierContract = supplierContractAddress;
     }
+
+    //events
+    event buyRawMaterial(uint productId);
+    event processedWine(uint productId);
+    event wineRemoved(uint productId);
+    event returnedRawMaterial(uint productId);
+    event WineReadyToShip(uint productId);
+    event WineDisbatched(uint productId);
+    event rawMaterialReceived(uint productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -34,6 +44,7 @@ contract WineProducer {
             msg.sender,
             address(this)
         );
+        emit buyRawMaterial(productId);
     }
 
     function received(
@@ -45,6 +56,32 @@ contract WineProducer {
         (string memory location, string memory disbatchDate, string memory prevArrivalDate) = productContract.getCurrentLocation(productId);
         productContract.addPreviousLocation(productId, location, disbatchDate, prevArrivalDate);
         productContract.setCurrentLocation(productId, currentLocation, "", arrivalDate);
+        emit rawMaterialReceived(productId);
+    }
+
+
+    function removeWine(uint256 productId) public ownerOnly(productId) {
+        productContract.removeProduct(productId);
+        for (uint256 i = 0; i < wineOwned.length; i++) {
+            if (wineOwned[i] == productId) {
+                delete wineOwned[i];
+                break;
+            }
+        }
+        emit wineRemoved(productId);
+    }
+
+
+    //Setting of location is unncessary because the returned products would not be of used anymore in the supplychain.
+
+    function returnRawMaterials(uint256 productId) public ownerOnly(productId) {
+        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
+        productContract.setPreviousOwner(productId, msg.sender);
+        productContract.setCurrentOwner(productId, productContract.getPreviousOwner(productId));
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
+
+        emit returnedRawMaterial(productId);
     }
 
 
@@ -56,6 +93,7 @@ contract WineProducer {
         (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
         productContract.setCurrentLocation(productId, newLocation, "", "");
+        emit WineReadyToShip(productId);
     }
 
     function processWine(
@@ -104,13 +142,15 @@ contract WineProducer {
             uint256 productId = productIds[i];
             productContract.addComponentProduct(wineProductId, productId);
         }
+
+        wineOwned.push(wineProductId);
     
 
         //Use up all the materials
         for (uint256 i = 0; i < productIds.length; i++) {
             productContract.setUsed(productIds[i], true);
         }
-
+        emit processedWine(wineProductId);
         return wineProductId;
     }
 
@@ -124,6 +164,8 @@ contract WineProducer {
         productContract.setCurrentContractAddress(productId, bulkDistributorContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+
+        emit WineDisbatched(productId);
     }
 }
 

@@ -10,6 +10,12 @@ contract RawMaterialSupplier {
         productContract = productContractddress;
     }
 
+    //events
+    event rawMaterialAdded(uint productId);
+    event rawMaterialRemoved(uint productId);
+    event rawMaterialReadyToShip(uint productId);
+    event rawMaterialDisbatched(uint productId);
+
     //modifiers
     modifier ownerOnly(uint256 productId) {
         require(productContract.getCurrentOwner(productId) == msg.sender);
@@ -50,6 +56,7 @@ contract RawMaterialSupplier {
 
 
         rawMaterialsOwned.push(productId);
+        emit rawMaterialAdded(productId);
         return productId;
     }
 
@@ -62,12 +69,14 @@ contract RawMaterialSupplier {
                 break;
             }
         }
+        emit rawMaterialRemoved(productId);
     }
     
 
     function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
         productContract.setReadyToShip(productId, true);
+        emit rawMaterialReadyToShip(productId);
     }
 
     function disbatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
@@ -78,5 +87,6 @@ contract RawMaterialSupplier {
         productContract.setCurrentContractAddress(productId, wineProducerContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+        emit rawMaterialDisbatched(productId);
     }    
 }
