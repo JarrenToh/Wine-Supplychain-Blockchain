@@ -22,6 +22,7 @@ contract TransitCellar {
     event wineAnalysed(uint productId); 
     event wineDispatched(uint productId);
     event wineReturned(uint productId);
+    event wineRefunded(uint productId);
     event wineRemoved(uint productId);
 
     //modifiers
@@ -65,19 +66,30 @@ contract TransitCellar {
      function returnWine(uint256 productId) public payable {
 
         require(productContract.getReceived(productId) == true, "Wine is not yet received for return");
-        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
-
-        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
-        require(msg.value >= productPrice, "Insufficent amount for refund");
-        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
-        targetAddress.transfer(productPrice);
+        
+        address prevOwner = productContract.getPreviousOwner(productId);
+        address prevContractAddress = productContract.getPreviousContractAddress(productId);
 
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, msg.sender);
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
-        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, prevContractAddress);
+        productContract.setCurrentOwner(productId, prevOwner);
 
         emit wineReturned(productId);
+    }
+
+    //Refund money to filler packer
+    function refundFillerPacker(uint256 productId) public payable ownerOnly(productId) {
+
+        require(productContract.getCurrentOwner(productId) == msg.sender, "Unable to refund items");
+
+        //Transfer back the amt
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value >= productPrice, "Insufficent amount for refund");
+        address payable targetAddress = address(uint160(productContract.getPreviousOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        emit wineRefunded(productId);
     }
 
     //Remove wine from products
@@ -102,12 +114,15 @@ contract TransitCellar {
     function dispatchWineToFillerPacker(uint256 productId, string memory dispatchDate, address newOwner, address newContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(productContract.getCurrentContractAddress(productId) == address(this));
+        
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, dispatchDate, arrivalDate);
-
-        productContract.transferProduct(productId, newOwner, newContractAddress);
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));    
+        productContract.setCurrentContractAddress(productId, newContractAddress);
         productContract.setReceived(productId, false);
-        
+        productContract.setCurrentOwner(productId, newOwner);
+
         emit wineDispatched(productId);
     }
 

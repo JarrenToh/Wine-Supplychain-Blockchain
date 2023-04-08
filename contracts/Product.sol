@@ -446,4 +446,5 @@ contract Product {
         products[productId].readyToShip = _shipStatus;
         // products[productId].readyToShip = true;
     }
+
 }

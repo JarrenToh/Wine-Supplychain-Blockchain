@@ -13,8 +13,9 @@ contract GoodsDistributor {
     event buyWineBatch(uint wineBatchId);
     event wineBatchReceived(uint256 wineBatchId);
     event dispatchWineBatch(uint256 wineBatchId);
+    event returnedWine(uint256 wineBatchId);
+    event refundWine(uint256 wineBatchId);
     event wineBatchRemoved(uint256 wineBatchId);
-    event returnedWineBatch(uint256 wineBatchId);
 
     uint256[] public wineBatchStorage;
 
@@ -75,6 +76,34 @@ contract GoodsDistributor {
         emit wineBatchReceived(productId);
     }
 
+    function returnWine(uint256 productId) public ownerOnly(productId) {
+
+        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
+
+        address prevOwner = productContract.getPreviousOwner(productId);
+        address prevContractAddress = productContract.getPreviousContractAddress(productId);
+
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, prevContractAddress);
+        productContract.setCurrentOwner(productId, prevOwner);
+
+        emit returnedWine(productId);
+    }
+
+    function refundWholesaler(uint256 productId) public payable ownerOnly(productId) {
+
+        require(productContract.getCurrentOwner(productId) == msg.sender, "Unable to refund items");
+
+        //Transfer back the amt
+        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
+        require(msg.value >= productPrice, "Insufficent amount for refund");
+        address payable targetAddress = address(uint160(productContract.getPreviousOwner(productId)));
+        targetAddress.transfer(productPrice);
+
+        emit refundWine(productId);
+    }
+
     //dispatch to wholesaler
     function dispatchWineToWholesaler(uint256 productId, string memory newDisbatchDate, address wholeSalerAddress, address wholeSalerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
@@ -112,6 +141,7 @@ contract GoodsDistributor {
         }
         emit wineBatchRemoved(productId);
     }
+<<<<<<< HEAD
 
     function returnWineBatch(uint256 productId) public payable ownerOnly(productId) {
 
@@ -133,4 +163,6 @@ contract GoodsDistributor {
     }
 
 
+=======
+>>>>>>> a260fd1a65918933d7fb36a4b1d97da085e98930
 }
