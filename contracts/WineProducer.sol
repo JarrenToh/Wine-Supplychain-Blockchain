@@ -155,7 +155,7 @@ contract WineProducer {
         return wineProductId;
     }
 
-    function disbatchWineToBulkDistributor(uint256 productId, string memory newDisbatchDate, address bulkDistributorAddress, address bulkDistributorContractAddress) public ownerOnly(productId) {
+    function dispatchWineToBulkDistributor(uint256 productId, string memory newDisbatchDate, address bulkDistributorAddress, address bulkDistributorContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
         
