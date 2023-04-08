@@ -86,7 +86,7 @@ contract TransitCellar {
         //Transfer back the amt
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value >= productPrice, "Insufficent amount for refund");
-        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
+        address payable targetAddress = address(uint160(productContract.getPreviousOwner(productId)));
         targetAddress.transfer(productPrice);
 
         emit wineRefunded(productId);
