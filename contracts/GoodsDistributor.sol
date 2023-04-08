@@ -76,7 +76,7 @@ contract GoodsDistributor {
     }
 
     //dispatch to wholesaler
-    function disbatchWineToWholesaler(uint256 productId, string memory newDisbatchDate, address wholeSalerAddress, address wholeSalerContractAddress) public ownerOnly(productId) {
+    function dispatchWineToWholesaler(uint256 productId, string memory newDisbatchDate, address wholeSalerAddress, address wholeSalerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(productContract.getCurrentContractAddress(productId) == address(this));
 

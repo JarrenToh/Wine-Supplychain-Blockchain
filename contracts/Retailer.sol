@@ -34,7 +34,7 @@ contract Retailer {
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        wholeSalerContract.disbatchWineToRetailer(productId, dispatchDate, msg.sender, address(this));
+        wholeSalerContract.dispatchWineToRetailer(productId, dispatchDate, msg.sender, address(this));
         emit buyWineBatch(productId);
     }
 

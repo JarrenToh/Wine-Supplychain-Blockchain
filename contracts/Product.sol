@@ -44,6 +44,7 @@ contract Product {
         string name,
         address currentContractAddress
     );
+    event testing(uint256 productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -434,14 +435,15 @@ contract Product {
     function getReadyToShip(
         uint256 productId
     ) public view ownerOnly(productId) returns (bool) {
-        products[productId].readyToShip;
+        return products[productId].readyToShip;
     }
 
     function setReadyToShip(
         uint256 productId,
-        bool shipStatus
+        bool _shipStatus
     ) public ownerOnly(productId) validProductId(productId) {
-        products[productId].readyToShip = shipStatus;
-        products[productId].readyToShip = true;
+
+        products[productId].readyToShip = _shipStatus;
+        // products[productId].readyToShip = true;
     }
 }

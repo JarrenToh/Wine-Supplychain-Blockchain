@@ -37,7 +37,7 @@ contract WineProducer {
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        rawMaterialSupplierContract.disbatchRawMaterial(
+        rawMaterialSupplierContract.dispatchRawMaterial(
             productId, 
             disbatchDate, 
             msg.sender,
