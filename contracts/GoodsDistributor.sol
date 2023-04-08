@@ -15,6 +15,7 @@ contract GoodsDistributor {
     event dispatchWineBatch(uint256 wineBatchId);
     event returnedWine(uint256 wineBatchId);
     event refundWine(uint256 wineBatchId);
+    event wineBatchRemoved(uint256 wineBatchId);
 
     uint256[] public wineBatchStorage;
 
@@ -104,7 +105,7 @@ contract GoodsDistributor {
     }
 
     //dispatch to wholesaler
-    function disbatchWineToWholesaler(uint256 productId, string memory newDisbatchDate, address wholeSalerAddress, address wholeSalerContractAddress) public ownerOnly(productId) {
+    function dispatchWineToWholesaler(uint256 productId, string memory newDisbatchDate, address wholeSalerAddress, address wholeSalerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(productContract.getCurrentContractAddress(productId) == address(this));
 
@@ -113,12 +114,14 @@ contract GoodsDistributor {
 
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, wholeSalerContractAddress);
+        
+        productContract.setReceived(productId, false); //set received to false before sending
 
         (string memory location, ,string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
 
         //remove wine batch with productId from storage
-        for (uint i = 0; i < wineBatchStorage.length - 1; i++) {
+        for (uint i = 0; i <= wineBatchStorage.length - 1; i++) {
             if (wineBatchStorage[i] == productId) {
                 removeWineBatchFromStorage(i);
                 break;
@@ -126,5 +129,16 @@ contract GoodsDistributor {
         }
        
         emit dispatchWineBatch(productId);
+    }
+
+    function removeWineBatch(uint256 productId) public ownerOnly(productId) {
+        productContract.removeProduct(productId);
+        for (uint256 i = 0; i <= wineBatchStorage.length - 1; i++) {
+            if (wineBatchStorage[i] == productId) {
+                removeWineBatchFromStorage(i);
+                break;
+            }
+        }
+        emit wineBatchRemoved(productId);
     }
 }

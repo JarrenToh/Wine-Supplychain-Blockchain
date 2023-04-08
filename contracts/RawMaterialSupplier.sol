@@ -23,8 +23,6 @@ contract RawMaterialSupplier {
         _;
     }
 
-
-
     function addRawMaterial(
         string memory name,
         string memory placeOfOrigin,
@@ -47,7 +45,8 @@ contract RawMaterialSupplier {
             unitQuantityType, 
             batchQuantity, 
             unitPrice, 
-            category
+            category,
+            address(msg.sender)
         );
         productContract.setPlaceOfOrigin(productId, placeOfOrigin);
         productContract.setProductionDate(productId, productionDate);
@@ -86,7 +85,7 @@ contract RawMaterialSupplier {
         emit rawMaterialReadyToShip(productId);
     }
 
-    function disbatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
+    function dispatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));    

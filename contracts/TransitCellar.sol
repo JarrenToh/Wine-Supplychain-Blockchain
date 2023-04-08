@@ -43,7 +43,7 @@ contract TransitCellar {
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        bulkDistributorContract.disbatchWineToTransitCellar(productId, dispatchDate, msg.sender, address(this));
+        bulkDistributorContract.dispatchWineToTransitCellar(productId, dispatchDate, msg.sender, address(this));
         emit wineBought(productId);
     }
 

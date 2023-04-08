@@ -44,6 +44,7 @@ contract Product {
         string name,
         address currentContractAddress
     );
+    event testing(uint256 productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -111,17 +112,19 @@ contract Product {
         string memory unitQuantityType,
         uint256 batchQuantity,
         uint256 unitPrice,
-        string memory category
+        string memory category,
+        address messageSender
     ) public returns (uint256) {
         require(bytes(name).length > 0, "Name cannot be empty");
 
         //create new product
         uint256 newProductId = noProduct++;
-        products[newProductId] = product({
+       // uint256 newProductId = noProduct;
+        product memory newProduct = product({
             componentProductIds: new uint256[](0),
             productId: newProductId,
             name: name,
-            currentOwner: tx.origin,
+            currentOwner: messageSender,
             currentContractAddress: currentContractAddress,
             previousOwner: address(0),
             previousContractAddress: address(0),
@@ -143,7 +146,9 @@ contract Product {
             }),
             readyToShip: false
         });
-        emit ProductCreated(newProductId, name, msg.sender);
+
+        products[newProductId] = newProduct;
+        emit ProductCreated(newProductId, name, messageSender);
         return newProductId;
     }
 
@@ -435,9 +440,11 @@ contract Product {
 
     function setReadyToShip(
         uint256 productId,
-        bool shipStatus
+        bool _shipStatus
     ) public ownerOnly(productId) validProductId(productId) {
-        products[productId].readyToShip = shipStatus;
+
+        products[productId].readyToShip = _shipStatus;
+        // products[productId].readyToShip = true;
     }
 
 }

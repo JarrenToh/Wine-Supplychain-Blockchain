@@ -38,7 +38,7 @@ contract BulkDistributor {
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        wineProducerContract.disbatchWineToBulkDistributor(productId, dispatchDate, msg.sender, address(this));
+        wineProducerContract.dispatchWineToBulkDistributor(productId, dispatchDate, msg.sender, address(this));
         emit buyWine(productId);
 
     }
@@ -103,7 +103,7 @@ contract BulkDistributor {
     }
 
     //dispatch to Transit Cellar
-    function disbatchWineToTransitCellar(uint256 productId, string memory newDisbatchDate, address transitCellarAddress, address transitCellarContractAddress) public ownerOnly(productId) {
+    function dispatchWineToTransitCellar(uint256 productId, string memory newDisbatchDate, address transitCellarAddress, address transitCellarContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(productContract.getCurrentContractAddress(productId) == address(this));
 

@@ -12,6 +12,7 @@ contract Retailer {
     event buyWineBatch(uint256 wineBatchId);
     event wineBatchReceived(uint256 wineBatchId);
     event returnedWine(uint256 wineBatchId);
+    event wineBatchRemoved(uint256 wineBatchId);
 
     mapping(uint256 => uint256) public wineRemainingInBatch;
 
@@ -33,7 +34,7 @@ contract Retailer {
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        wholeSalerContract.disbatchWineToRetailer(productId, dispatchDate, msg.sender, address(this));
+        wholeSalerContract.dispatchWineToRetailer(productId, dispatchDate, msg.sender, address(this));
         emit buyWineBatch(productId);
     }
 
@@ -73,6 +74,11 @@ contract Retailer {
 
     function sellWine(uint256 productId, uint256 quantity) public {
         wineRemainingInBatch[productId] -= quantity;
+    }
+
+    function removeWineBatch(uint256 productId) public ownerOnly(productId) {
+        productContract.removeProduct(productId);
+        emit wineBatchRemoved(productId);
     }
 
 }

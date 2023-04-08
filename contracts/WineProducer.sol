@@ -116,6 +116,7 @@ contract WineProducer {
         uint256 unitPrice, 
         string memory category, 
         string memory currentPhysicalLocation
+
         ) public returns (uint256) {
 
 
@@ -138,7 +139,8 @@ contract WineProducer {
             unitQuantityType, 
             batchQuantity, 
             unitPrice, 
-            category
+            category,
+            address(msg.sender)
             );
 
         productContract.setPlaceOfOrigin(wineProductId, placeOfOrigin);
@@ -161,7 +163,7 @@ contract WineProducer {
         return wineProductId;
     }
 
-    function disbatchWineToBulkDistributor(uint256 productId, string memory newDisbatchDate, address bulkDistributorAddress, address bulkDistributorContractAddress) public ownerOnly(productId) {
+    function dispatchWineToBulkDistributor(uint256 productId, string memory newDisbatchDate, address bulkDistributorAddress, address bulkDistributorContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
         
