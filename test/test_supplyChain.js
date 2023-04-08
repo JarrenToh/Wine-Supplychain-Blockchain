@@ -35,10 +35,10 @@ contract('SupplyChain', function (accounts) {
 
         let addGrape = await rawMaterialSupplierInstance.addRawMaterial("Grape", "Middle East", "1/4/2023", "1/4/2024", 100, "Gram", 1000, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
-        let addGrape2 = await rawMaterialSupplierInstance.addRawMaterial("Grape", "Middle East", "1/4/2023", "1/4/2024", 100, "Gram", 1000, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
+        let addGrape2 = await rawMaterialSupplierInstance.addRawMaterial("Sugar", "Middle East", "1/4/2023", "1/4/2024", 100, "Gram", 1000, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
         console.log(await productInstance.getProductName(0));
-        console.log(await productInstance.getProductName(1));
+        // console.log(await addGrape);
 
         await assert.notStrictEqual(
             addGrape,
@@ -135,22 +135,23 @@ contract('SupplyChain', function (accounts) {
     });
 
     it('Material Ready to ship in RawMaterialSupplier', async () => {
-        // let rts = await rawMaterialSupplierInstance.materialReadyToShip(0, {from: accounts[1]});
+        let rts = await rawMaterialSupplierInstance.materialReadyToShip(0, {from: accounts[1]});
 
-        // truffleAssert.eventEmitted(rts, "rawMaterialReadyToShip");
+        truffleAssert.eventEmitted(rts, "rawMaterialReadyToShip");
 
-       // console.log(await productInstance.getReadyToShip(0, {from: accounts[1]}));
+       console.log(await productInstance.getReadyToShip(0, {from: accounts[1]}));
 
-        await productInstance.setReadyToShip(0, true, {from: accounts[1]});
+        // await productInstance.setReadyToShip(0, true, {from: accounts[1]});
 
-        console.log(await productInstance.getReadyToShip(0, {from: accounts[1]}));
-        // assert.strictEqual(
-        //     await productInstance.getReadyToShip(productId, {from: accounts[1]}), 
-        //     true, 
-        //     "Failed to set raw materials ready for shipping");
+        assert.strictEqual(
+            await productInstance.getReadyToShip(0, {from: accounts[1]}), 
+            true, 
+            "Failed to set raw materials ready for shipping");
     });
 
+
     it('Test', async () => {
+
 
     });
 

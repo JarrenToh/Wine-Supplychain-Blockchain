@@ -92,7 +92,7 @@ contract RawMaterialSupplier {
         emit rawMaterialReadyToShip(productId);
     }
 
-    function disbatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
+    function dispatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
         productContract.setCurrentOwner(productId, wineProducerAddress);
