@@ -23,8 +23,6 @@ contract RawMaterialSupplier {
         _;
     }
 
-
-
     function addRawMaterial(
         string memory name,
         string memory placeOfOrigin,
@@ -47,7 +45,8 @@ contract RawMaterialSupplier {
             unitQuantityType, 
             batchQuantity, 
             unitPrice, 
-            category
+            category,
+            address(msg.sender)
         );
         productContract.setPlaceOfOrigin(productId, placeOfOrigin);
         productContract.setProductionDate(productId, productionDate);
