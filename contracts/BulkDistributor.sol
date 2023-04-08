@@ -21,6 +21,7 @@ contract BulkDistributor {
     event dispatchWine(uint productId);
     event readyToShip(uint productId);
     event returnedWine(uint productId);
+    event refundWine(uint productId);
     event wineRemoved(uint productId);
 
     //modifiers
@@ -66,22 +67,32 @@ contract BulkDistributor {
         emit wineReceived(productId);
     }
 
-        function returnWine(uint256 productId) public payable {
+    function returnWine(uint256 productId) public ownerOnly(productId) {
 
-        require(productContract.getReceived(productId) == true, "Wine is not yet received for return");
-        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
+        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
 
+        address prevOwner = productContract.getPreviousOwner(productId);
+        address prevContractAddress = productContract.getPreviousContractAddress(productId);
+
+        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
+        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
+        productContract.setCurrentContractAddress(productId, prevContractAddress);
+        productContract.setCurrentOwner(productId, prevOwner);
+
+        emit returnedWine(productId);
+    }
+
+    function refundTransitCellar(uint256 productId) public payable ownerOnly(productId) {
+
+        require(productContract.getCurrentOwner(productId) == msg.sender, "Unable to refund items");
+
+        //Transfer back the amt
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value >= productPrice, "Insufficent amount for refund");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, msg.sender);
-        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
-        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
-
-        emit returnedWine(productId);
+        emit refundWine(productId);
     }
 
     function materialReadyToShip(uint256 productId) public ownerOnly(productId) {

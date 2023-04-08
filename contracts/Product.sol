@@ -121,7 +121,7 @@ contract Product {
             componentProductIds: new uint256[](0),
             productId: newProductId,
             name: name,
-            currentOwner: msg.sender,
+            currentOwner: tx.origin,
             currentContractAddress: currentContractAddress,
             previousOwner: address(0),
             previousContractAddress: address(0),
@@ -430,7 +430,7 @@ contract Product {
     function getReadyToShip(
         uint256 productId
     ) public view ownerOnly(productId) returns (bool) {
-        products[productId].readyToShip;
+        return products[productId].readyToShip;
     }
 
     function setReadyToShip(
@@ -439,4 +439,5 @@ contract Product {
     ) public ownerOnly(productId) validProductId(productId) {
         products[productId].readyToShip = shipStatus;
     }
+
 }
