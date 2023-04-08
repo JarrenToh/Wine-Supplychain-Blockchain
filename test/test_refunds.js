@@ -200,11 +200,14 @@ contract('Refund', function (accounts) {
         //     "Money not subtracted from raw material supplier"
         // );
 
-        // await assert.strictEqual(
-        //     Number(afterBalance2) - Number(balance2),
-        //     3,
-        //     "Money not refunded back to wine producer"
-        // );
+        await assert.strictEqual(
+            Number(afterBalance2) - Number(balance2),
+            3,
+            "Money not refunded back to wine producer"
+        );
+
+        assert.equal(Number(afterBalance2) - Number(balance2), 3, "Money not refunded back to wine producer");
+
 
         truffleAssert.eventEmitted(refund, "refundRawMaterial");
     });
