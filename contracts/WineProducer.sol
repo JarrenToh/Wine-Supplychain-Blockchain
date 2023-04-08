@@ -109,6 +109,7 @@ contract WineProducer {
         uint256 unitPrice, 
         string memory category, 
         string memory currentPhysicalLocation
+
         ) public returns (uint256) {
 
 
@@ -131,7 +132,8 @@ contract WineProducer {
             unitQuantityType, 
             batchQuantity, 
             unitPrice, 
-            category
+            category,
+            address(msg.sender)
             );
 
         productContract.setPlaceOfOrigin(wineProductId, placeOfOrigin);
