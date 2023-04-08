@@ -33,9 +33,9 @@ contract('SupplyChain', function (accounts) {
     it('Test add raw material', async () => {
         console.log("Enter here");
 
-        let addGrape = await rawMaterialSupplierInstance.addRawMaterial("Grape", "Middle East", "1/4/2023", "1/4/2024", 100, "Gram", 1000, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
+        let addGrape = await rawMaterialSupplierInstance.addRawMaterial("Grape", "Middle East", "1/4/2023", "1/4/2024", 1, "Gram", 10, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
-        let addGrape2 = await rawMaterialSupplierInstance.addRawMaterial("Sugar", "Middle East", "1/4/2023", "1/4/2024", 100, "Gram", 1000, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
+       // let addGrape2 = await rawMaterialSupplierInstance.addRawMaterial("Sugar", "Middle East", "1/4/2023", "1/4/2024", 1, "Gram", 10, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
         console.log(await productInstance.getProductName(0));
         // console.log(await addGrape);
@@ -84,7 +84,7 @@ contract('SupplyChain', function (accounts) {
 
         await assert.strictEqual(
             Number(await productInstance.getUnitQuantity(0)),         
-            100,
+            1,
             "Failed to add Grape - unit quantity is not the same"
         )
 
@@ -100,7 +100,7 @@ contract('SupplyChain', function (accounts) {
 
         await assert.strictEqual(
             Number(await productInstance.getBatchQuantity(0)),
-            1000,
+            10,
             "Failed to add Grape - batch quantity is not the same"
         );
 
@@ -139,10 +139,6 @@ contract('SupplyChain', function (accounts) {
 
         truffleAssert.eventEmitted(rts, "rawMaterialReadyToShip");
 
-       console.log(await productInstance.getReadyToShip(0, {from: accounts[1]}));
-
-        // await productInstance.setReadyToShip(0, true, {from: accounts[1]});
-
         assert.strictEqual(
             await productInstance.getReadyToShip(0, {from: accounts[1]}), 
             true, 
@@ -150,21 +146,97 @@ contract('SupplyChain', function (accounts) {
     });
 
 
-    it('Test', async () => {
+    it('Wine producer buy wine from raw materials supplier', async () => {
+        let ownerBalanceBefore = web3.utils.toBN(await web3.eth.getBalance(accounts[1]));
+        let buyFromRms = await wineProducerInstance.buy(0, {from: accounts[2], value: 21});
 
+        truffleAssert.eventEmitted(buyFromRms, "buyRawMaterial");
+
+        let ownerBalanceAfter = web3.utils.toBN(await web3.eth.getBalance(accounts[1]));
+
+        assert(ownerBalanceAfter.sub(ownerBalanceBefore).eq(web3.utils.toBN(20)), "Owner did not receive the correct amount");
 
     });
 
-    it('Test', async () => {
+
+    it('Dispatch raw materials to wine producer', async () => {
+        let dispatchToWineProducer = await rawMaterialSupplierInstance.dispatchRawMaterial(0, "8/4/2023", accounts[2], wineProducerInstance.address, { from: accounts[1] });
+
+        truffleAssert.eventEmitted(dispatchToWineProducer, "rawMaterialDisbatched");
+
+        let dispatchDateResult = await productInstance.getCurrentLocation(0);
+        let dispatchDate = dispatchDateResult[1];
+
+        console.log(dispatchDate);
+
+        await assert.equal(
+            web3.utils.keccak256(dispatchDate),
+            web3.utils.keccak256("8/4/2023"),
+            "Failed to dispatch raw materials to wine producer - dispatch date is not the same"
+        );
+
+        console.log("dispatch date");
+
+        await assert.equal(
+            await productInstance.getCurrentOwner(0),
+            accounts[2],
+            "Failed to dispatch raw materials to wine producer - owner address is not the same"
+        );
+
+        console.log("owner address");
+
+        await assert.equal(
+            await productInstance.getCurrentContractAddress(0),
+            wineProducerInstance.address,
+            "Failed to dispatch raw materials to wine producer - contract address is not the same"
+        );
+
+        console.log("contract address");
+    });
+
+    it('Wine Producer received the raw materials', async () => {
+        let receiveRm = await wineProducerInstance.received(0, "Wine Factory", "9/4/2023", { from: accounts[2] })
+
+        truffleAssert.eventEmitted(receiveRm, "rawMaterialReceived");
+
+        let locationResult = await productInstance.getCurrentLocation(0);
+        let location = locationResult[0];
+
+        await assert.strictEqual(
+            web3.utils.keccak256(location),
+            web3.utils.keccak256("Wine Factory"),
+            "Failed to add Grape - current location is not the same"
+        );
+
+        let arrivalDate = locationResult[2];
+
+        console.log(arrivalDate);
+
+        await assert.equal(
+            web3.utils.keccak256(arrivalDate),
+            web3.utils.keccak256("9/4/2023"),
+            "Failed to dispatch raw materials to wine producer - arrival date is not the same"
+        );
+
+        assert.strictEqual(
+            await productInstance.getReceived(0), 
+            true, 
+            "Failed to receive raw materials from raw materials supplier");
 
     });
 
-    it('Test', async () => {
-
-    });
-
-    it('Test', async () => {
-
+    it('Process wine in wine producer', async () => {
+        // uint256[] memory productIds,
+        // string memory placeOfOrigin,
+        // string memory productionDate,
+        // string memory expirationDate, 
+        // uint256 unitQuantity, 
+        // string memory unitQuantityType, 
+        // uint256 batchQuantity, 
+        // uint256 unitPrice, 
+        // string memory category, 
+        // string memory currentPhysicalLocation
+        // let p1 = await wineProducerInstance.process
     });
 
     it('Test', async () => {

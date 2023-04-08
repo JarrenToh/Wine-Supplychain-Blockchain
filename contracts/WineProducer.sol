@@ -29,20 +29,20 @@ contract WineProducer {
 
 
     function buy(
-        uint256 productId,
-        string memory disbatchDate
+        uint256 productId
+        // string memory disbatchDate
     ) public payable returns(uint256) {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent balance to buy the supply");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        rawMaterialSupplierContract.dispatchRawMaterial(
-            productId, 
-            disbatchDate, 
-            msg.sender,
-            address(this)
-        );
+        // rawMaterialSupplierContract.dispatchRawMaterial(
+        //     productId, 
+        //     disbatchDate, 
+        //     msg.sender,
+        //     address(this)
+        // );
         emit buyRawMaterial(productId);
     }
 
@@ -87,14 +87,11 @@ contract WineProducer {
     }
 
 
-    function wineReadyToShip(uint256 productId, string memory newLocation) public ownerOnly(productId) {
+    function wineReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
-        require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
 
         productContract.setReadyToShip(productId, true);
-        (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
-        productContract.setCurrentLocation(productId, newLocation, "", "");
+    
         emit WineReadyToShip(productId);
     }
 
@@ -147,8 +144,6 @@ contract WineProducer {
             productContract.addComponentProduct(wineProductId, productId);
         }
 
-    
-
         //Use up all the materials
         for (uint256 i = 0; i < productIds.length; i++) {
             productContract.setUsed(productIds[i], true);
@@ -162,12 +157,12 @@ contract WineProducer {
         require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
         
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, bulkDistributorAddress);
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, bulkDistributorContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
-
+        productContract.setCurrentOwner(productId, bulkDistributorAddress);
+        productContract.setReceived(productId, false);
         emit WineDisbatched(productId);
     }
 }
