@@ -172,11 +172,17 @@ The following functions are available for each actor in the supply chain:
 ### TransitCellar.sol
 
   1. constructor(Product productContractAddress, BulkDistributor bulkDistributorAddress): A constructor function that takes in two parameters, the address of the Product contract and the address of the BulkDistributor contract. These addresses are stored in the state variables productContract and bulkDistributorContract respectively. The constructor function is marked as public and is executed only once when the contract is deployed.
+  
   2. getAnalysisDetails: a public function that takes in a productId and returns the analysis details of the product stored in the analysisDetails mapping.
+  
   3. buyWineFromBulkDistributor: a public payable function that takes in a productId and transfers the required amount of Ether to the bulk distributor to buy the wine. If the transferred amount is less than the product price, it reverts the transaction.
+  
   4. receiveWineFromBulkDistributor: a public payable function that takes in a productId, the current location and arrival date of the wine. It checks whether the caller is the current owner of the wine and whether the wine is not already received, ready to ship, and whether the current contract address matches the product's current contract address. It then sets the wine as received, not ready to ship, and sets the previous location details before emitting a wineReceived event.
+  
   5. returnWine: a public payable function that takes in a productId and returns the wine to the previous owner and contract address of the wine. It then emits a wineReturned event.
+  
   6. refundFillerPacker: a public payable function that takes in a productId and refunds the filler packer the amount they paid for the product. It then emits a wineRefunded event.
+  
   7. removeWine: a public function that takes in a productId and removes the product from the products. It then emits a wineRemoved event.
 
 
