@@ -19,7 +19,7 @@ contract WineProducer {
     event returnedRawMaterial(uint productId);
     event refundWine(uint productId);
     event WineReadyToShip(uint productId);
-    event WineDispatched(uint productId);
+    event WineDisbatched(uint productId);
     event rawMaterialReceived(uint productId);
 
     //modifiers

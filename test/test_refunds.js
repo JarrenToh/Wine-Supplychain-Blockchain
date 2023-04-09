@@ -361,7 +361,7 @@ contract('Refund', function (accounts) {
             "Wine previous owner is incorrect"
         );
 
-        truffleAssert.eventEmitted(dispatch, "WineDispatched");
+        truffleAssert.eventEmitted(dispatch, "WineDisbatched");
     });
 
     it('Bulk distributor receives wine from wine producer', async () => {

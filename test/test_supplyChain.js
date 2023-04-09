@@ -2,84 +2,84 @@ const _deploy_contracts = require("../migrations/2_deploy_contracts.js");
 const truffleAssert = require("truffle-assertions");
 var assert = require("assert");
 
-// var Product = artifacts.require("../contracts/Product.sol");
-// var RawMaterialSupplier = artifacts.require("../contracts/RawMaterialSupplier.sol");
-// var WineProducer = artifacts.require("../contracts/WineProducer.sol");
-// var BulkDistributor = artifacts.require("../contracts/BulkDistributor.sol");
-// var TransitCellar = artifacts.require("../contracts/TransitCellar.sol");
-// var FillerPacker = artifacts.require("../contracts/FillerPacker.sol");
-// var GoodDistributor = artifacts.require("../contracts/GoodsDistributor.sol");
-// var Wholesaler = artifacts.require("../contracts/Wholesaler.sol");
-// var Retailer = artifacts.require("../contracts/Retailer.sol");
+var Product = artifacts.require("../contracts/Product.sol");
+var RawMaterialSupplier = artifacts.require("../contracts/RawMaterialSupplier.sol");
+var WineProducer = artifacts.require("../contracts/WineProducer.sol");
+var BulkDistributor = artifacts.require("../contracts/BulkDistributor.sol");
+var TransitCellar = artifacts.require("../contracts/TransitCellar.sol");
+var FillerPacker = artifacts.require("../contracts/FillerPacker.sol");
+var GoodDistributor = artifacts.require("../contracts/GoodsDistributor.sol");
+var Wholesaler = artifacts.require("../contracts/Wholesaler.sol");
+var Retailer = artifacts.require("../contracts/Retailer.sol");
 
-// contract('SupplyChain', function (accounts) {
-//     before(async () => {
-//         productInstance = await Product.deployed();
-//         rawMaterialSupplierInstance = await RawMaterialSupplier.deployed();
-//         wineProducerInstance = await WineProducer.deployed();
-//         bulkDistributorInstance = await BulkDistributor.deployed();
-//         transitCellarInstance = await TransitCellar.deployed();
-//         fillerPackerInstance = await FillerPacker.deployed();
-//         goodDistributorInstance = await GoodDistributor.deployed();
-//         wholesalerInstance = await Wholesaler.deployed();
-//         retailerInstance = await Retailer.deployed();
-//     });
+contract('SupplyChain', function (accounts) {
+    before(async () => {
+        productInstance = await Product.deployed();
+        rawMaterialSupplierInstance = await RawMaterialSupplier.deployed();
+        wineProducerInstance = await WineProducer.deployed();
+        bulkDistributorInstance = await BulkDistributor.deployed();
+        transitCellarInstance = await TransitCellar.deployed();
+        fillerPackerInstance = await FillerPacker.deployed();
+        goodDistributorInstance = await GoodDistributor.deployed();
+        wholesalerInstance = await Wholesaler.deployed();
+        retailerInstance = await Retailer.deployed();
+    });
 
-//     console.log("Testing Supply Chain");
+    console.log("Testing Supply Chain");
 
-//     let productId;
+    let productId;
 
-//     it('Test add raw material', async () => {
-//         console.log("Enter here");
+    it('Test add raw material', async () => {
+        console.log("Enter here");
 
         let addGrape = await rawMaterialSupplierInstance.addRawMaterial("Grape", "Middle East", "1/4/2023", "1/4/2024", 1, "Gram", 10, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
        // let addGrape2 = await rawMaterialSupplierInstance.addRawMaterial("Sugar", "Middle East", "1/4/2023", "1/4/2024", 1, "Gram", 10, 2, "Fruit", "Grape Supplier", { from: accounts[1] });
 
-//         console.log(await productInstance.getProductName(0));
-//         // console.log(await addGrape);
+        console.log(await productInstance.getProductName(0));
+        // console.log(await addGrape);
 
-//         await assert.notStrictEqual(
-//             addGrape,
-//             undefined,
-//             "Failed to add Grape"
-//         );
+        await assert.notStrictEqual(
+            addGrape,
+            undefined,
+            "Failed to add Grape"
+        );
 
-//         truffleAssert.eventEmitted(addGrape, "rawMaterialAdded");
+        truffleAssert.eventEmitted(addGrape, "rawMaterialAdded");
 
-//         console.log("event emitted");
+        console.log("event emitted");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getProductName(0)),
-//             web3.utils.keccak256("Grape"),
-//             "Failed to add Grape - product name is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getProductName(0)),
+            web3.utils.keccak256("Grape"),
+            "Failed to add Grape - product name is not the same"
+        );
 
-//         console.log("Test value of product name");
+        console.log("Test value of product name");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getPlaceOfOrigin(0)),
-//             web3.utils.keccak256("Middle East"),
-//             "Failed to add Grape - place of origin is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getPlaceOfOrigin(0)),
+            web3.utils.keccak256("Middle East"),
+            "Failed to add Grape - place of origin is not the same"
+        );
 
-//         console.log("Test value of place of origin");
+        console.log("Test value of place of origin");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getProductionDate(0)),
-//             web3.utils.keccak256("1/4/2023"),
-//             "Failed to add Grape - production date is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getProductionDate(0)),
+            web3.utils.keccak256("1/4/2023"),
+            "Failed to add Grape - production date is not the same"
+        );
 
-//         console.log("Test value of production date");
+        console.log("Test value of production date");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getExpirationDate(0)),
-//             web3.utils.keccak256("1/4/2024"),
-//             "Failed to add Grape - expiration date is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getExpirationDate(0)),
+            web3.utils.keccak256("1/4/2024"),
+            "Failed to add Grape - expiration date is not the same"
+        );
 
-//         console.log("Test value of expiration date");
+        console.log("Test value of expiration date");
 
         await assert.strictEqual(
             Number(await productInstance.getUnitQuantity(0)),         
@@ -87,15 +87,15 @@ var assert = require("assert");
             "Failed to add Grape - unit quantity is not the same"
         )
 
-//         console.log("Test value of unit quantity");
+        console.log("Test value of unit quantity");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getUnitQuantityType(0)),
-//             web3.utils.keccak256("Gram"),
-//             "Failed to add Grape - unit quantity type is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getUnitQuantityType(0)),
+            web3.utils.keccak256("Gram"),
+            "Failed to add Grape - unit quantity type is not the same"
+        );
 
-//         console.log("Test value of unit quantity type")
+        console.log("Test value of unit quantity type")
 
         await assert.strictEqual(
             Number(await productInstance.getBatchQuantity(0)),
@@ -103,40 +103,40 @@ var assert = require("assert");
             "Failed to add Grape - batch quantity is not the same"
         );
 
-//         console.log("Test value of batch quantity");
+        console.log("Test value of batch quantity");
 
-//         await assert.strictEqual(
-//             Number(await productInstance.getUnitPrice(0)),
-//             2,
-//             "Failed to add Grape - unit price is not the same"
-//         );
+        await assert.strictEqual(
+            Number(await productInstance.getUnitPrice(0)),
+            2,
+            "Failed to add Grape - unit price is not the same"
+        );
 
-//         console.log("Test unit price");
+        console.log("Test unit price");
 
-//         await assert.equal(
-//             web3.utils.keccak256(await productInstance.getCategory(0)),
-//             web3.utils.keccak256("Fruit"),
-//             "Failed to add Grape - category is not the same"
-//         );
+        await assert.equal(
+            web3.utils.keccak256(await productInstance.getCategory(0)),
+            web3.utils.keccak256("Fruit"),
+            "Failed to add Grape - category is not the same"
+        );
 
-//         console.log("Test value of category");
+        console.log("Test value of category");
 
-//         let locationResult = await productInstance.getCurrentLocation(0);
-//         let location = locationResult[0];
+        let locationResult = await productInstance.getCurrentLocation(0);
+        let location = locationResult[0];
 
-//         await assert.strictEqual(
-//             web3.utils.keccak256(location),
-//             web3.utils.keccak256("Grape Supplier"),
-//             "Failed to add Grape - location is not the same"
-//         );
+        await assert.strictEqual(
+            web3.utils.keccak256(location),
+            web3.utils.keccak256("Grape Supplier"),
+            "Failed to add Grape - location is not the same"
+        );
 
-//         console.log("Test value of current location");
-//     });
+        console.log("Test value of current location");
+    });
 
-//     it('Material Ready to ship in RawMaterialSupplier', async () => {
-//         let rts = await rawMaterialSupplierInstance.materialReadyToShip(0, {from: accounts[1]});
+    it('Material Ready to ship in RawMaterialSupplier', async () => {
+        let rts = await rawMaterialSupplierInstance.materialReadyToShip(0, {from: accounts[1]});
 
-//         truffleAssert.eventEmitted(rts, "rawMaterialReadyToShip");
+        truffleAssert.eventEmitted(rts, "rawMaterialReadyToShip");
 
         assert.strictEqual(
             await productInstance.getReadyToShip(0, {from: accounts[1]}), 
@@ -161,7 +161,7 @@ var assert = require("assert");
     it('Dispatch raw materials to wine producer', async () => {
         let dispatchToWineProducer = await rawMaterialSupplierInstance.dispatchRawMaterial(0, "8/4/2023", accounts[2], wineProducerInstance.address, { from: accounts[1] });
 
-        truffleAssert.eventEmitted(dispatchToWineProducer, "rawMaterialDisbatched");
+        truffleAssert.eventEmitted(dispatchToWineProducer, "rawMaterialDispatched");
 
         let dispatchDateResult = await productInstance.getCurrentLocation(0);
         let dispatchDate = dispatchDateResult[1];
@@ -249,7 +249,7 @@ var assert = require("assert");
         );
     
 
-//     });
+    });
 
     it('Process wine in wine producer with raw materials unavailable', async () => {
 
@@ -274,7 +274,7 @@ var assert = require("assert");
             "You Do Not Have Sufficient Products To Process Wine"
           );
 
-//     });
+    });
 
     it('Wine ready for shipping in wine producer contract', async () => {
         let wprts = await wineProducerInstance.wineReadyToShip(1, {from: accounts[2]});
@@ -286,7 +286,7 @@ var assert = require("assert");
             true, 
             "Failed to set wine ready for shipping");
 
-//     });
+    });
 
     it('Bulk Distributor buy wine from wine producer', async () => {
 
@@ -357,7 +357,7 @@ var assert = require("assert");
             true, 
             "Failed to receive wine from wine producer");
 
-//     });
+    });
 
     it('Wine ready to ship in Bulk Dsitributor contract', async () => {
         let bdrts = await bulkDistributorInstance.materialReadyToShip(1, {from: accounts[3]});
@@ -382,7 +382,7 @@ var assert = require("assert");
 
         assert(ownerBalanceAfter.sub(ownerBalanceBefore).eq(web3.utils.toBN(20)), "Owner did not receive the correct amount");
 
-//     });
+    });
 
     it('Dispatch wine to transit cellar', async () => {
         
@@ -481,7 +481,7 @@ var assert = require("assert");
 
         assert(ownerBalanceAfter.sub(ownerBalanceBefore).eq(web3.utils.toBN(20)), "Owner did not receive the correct amount");
 
-//     });
+    });
 
     it('Dispatch wine to filler packer', async () => {
         
@@ -554,7 +554,7 @@ var assert = require("assert");
             "Failed to package wine - packaging detail is not the same"
         );
 
-//     });
+    });
 
     it('Label wine', async () => {
 
@@ -568,7 +568,7 @@ var assert = require("assert");
             "Failed to label wine - labelling detail is not the same"
         );
 
-//     });
+    });
 
     it('Wine ready to ship in Filler Packer contract', async () => {
         let fprts = await fillerPackerInstance.materialReadyToShip(1, {from: accounts[5]});
@@ -837,6 +837,6 @@ var assert = require("assert");
             "Failed to sell wine - wine remaining in batch is not the same"
         )
 
-//     });
+    });
 
-// })
+})
