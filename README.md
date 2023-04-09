@@ -171,31 +171,114 @@ The following functions are available for each actor in the supply chain:
 
 ### TransitCellar.sol
 
-  1. constructor(Product productContractAddress, BulkDistributor bulkDistributorAddress): A constructor function that takes in two parameters, the address of the Product contract and the address of the BulkDistributor contract. These addresses are stored in the state variables productContract and bulkDistributorContract respectively. The constructor function is marked as public and is executed only once when the contract is deployed.
-  
-  2. getAnalysisDetails: a public function that takes in a productId and returns the analysis details of the product stored in the analysisDetails mapping.
-  
-  3. buyWineFromBulkDistributor: a public payable function that takes in a productId and transfers the required amount of Ether to the bulk distributor to buy the wine. If the transferred amount is less than the product price, it reverts the transaction.
-  
-  4. receiveWineFromBulkDistributor: a public payable function that takes in a productId, the current location and arrival date of the wine. It checks whether the caller is the current owner of the wine and whether the wine is not already received, ready to ship, and whether the current contract address matches the product's current contract address. It then sets the wine as received, not ready to ship, and sets the previous location details before emitting a wineReceived event.
-  
-  5. returnWine: a public payable function that takes in a productId and returns the wine to the previous owner and contract address of the wine. It then emits a wineReturned event.
-  
-  6. refundFillerPacker: a public payable function that takes in a productId and refunds the filler packer the amount they paid for the product. It then emits a wineRefunded event.
-  
-  7. removeWine: a public function that takes in a productId and removes the product from the products. It then emits a wineRemoved event.
+  1. constructor(Product productContractAddress, BulkDistributor bulkDistributorAddress): This is the constructor function that initializes the contract with the addresses of two other contracts, "Product" and "BulkDistributor".
+
+  2. getAnalysisDetails: This function allows anyone to retrieve the analysis details of a particular product.
+
+  3. buyWineFromBulkDistributor: This function allows a buyer to purchase wine from the bulk distributor. The buyer must send enough ether to cover the price of the product. Once the payment is received, the wine is marked as "bought" and an event is emitted.
+
+  4. receiveWineFromBulkDistributor: This function allows the transit cellar owner to receive wine from the bulk distributor. The function checks that the wine has not already been received, that it is being received by the correct contract, and that it is ready to be shipped. If all conditions are met, the wine is marked as received, and an event is emitted.
+
+  5. returnWine: This function allows the transit cellar owner to return wine to the bulk distributor. The function checks that the wine has been received and transfers ownership of the product back to the previous owner.
+
+  6. refundFillerPacker: This function allows the transit cellar owner to refund the filler packer for the wine. The function checks that the current owner is the transit cellar owner and that enough ether has been sent to cover the refund. If all conditions are met, the previous owner is refunded, and an event is emitted.
+
+  7. removeWine: This function allows the transit cellar owner to remove a product from the products list. An event is emitted once the product is removed.
+
+  8. analyseWine: This function allows anyone to store analysis details for a particular product. An event is emitted once the analysis is complete.
+
+  9. materialReadyToShip: This function allows the transit cellar owner to mark a product as ready to be shipped to the filler packer. An event is emitted once the product is marked as ready to ship.
+
+  10. dispatchWineToFillerPacker: This function allows the transit cellar owner to dispatch the wine to the filler packer. The function checks that the wine is ready to be shipped, and that it is being dispatched by the correct contract. If all conditions are met, ownership of the product is transferred to the filler packer, and an event is emitted.
 
 
 ### FillerPacker.sol
 
+  1. constructor(Product productContractAddress, TransitCellar transitCellarAddress): This function is the constructor of the smart contract. It is executed only once when the contract is deployed to the blockchain network. It initializes the contract by setting the addresses of the Product and TransitCellar contracts.
+
+  2. getOwner: This function is used to retrieve the address of the contract owner. The "view" keyword indicates that this function does not modify the contract state and can be executed without incurring any gas cost.
+
+  3. getPackagingDetails: This function is used to retrieve the packaging details of a product by its ID. The "view" keyword indicates that this function does not modify the contract state and can be executed without incurring any gas cost. It takes a product ID as input and returns the packaging details associated with that product.
+
+  4. getLabelDetails: This function is used to retrieve the label details of a product by its ID. The "view" keyword indicates that this function does not modify the contract state and can be executed without incurring any gas cost. It takes a product ID as input and returns the label details associated with that product.
+
+  5. buyWineFromTransitCellar: This function is used to buy wine from the TransitCellar contract by sending ether to the contract. It takes a product ID as input and the caller must send enough ether to cover the cost of the product.
+
+
+  6. receiveWineFromTransitCellar: This function is used to receive wine from the TransitCellar contract and update the product's location details. It takes a product ID, the current location, and the arrival date as inputs. The "ownerOnly" modifier ensures that only the contract owner can execute this function.
+
+  7. returnWine: This function is used to return wine to the TransitCellar contract and update the product's location details. It takes a product ID as input and the caller must send enough ether to cover the cost of returning the product.
+
+  8. refundFillerPacker: This function is used to refund the GoodsDistributor for a product. It takes a product ID as input and the caller must send enough ether to cover the cost of the refund. The "ownerOnly" modifier ensures that only the contract owner can execute this function.
+
+  9. packageWine: This function is used to store the packaging details of a product. It takes a product ID and the packaging details as inputs and updates the packaging details associated with that product.
+
+  10.  labelWine: This function is used to store the label details of a product. It takes a product ID and the label details as inputs and updates the label details associated with that product.
+
+  11. materialReadyToShip: This function is used to set a product as ready to ship to the GoodsDistributor. It takes a product ID as input and the "ownerOnly" modifier ensures that only the contract owner can execute this function.
+
+  12. dispatchWineToGoodsDistributor: This function is used to dispatch a product to the GoodsDistributor and update its location details. It takes in four parameters - the product ID, dispatch date, new owner address, and new contract address. The ownerOnly modifier ensures that only the contract owner can execute this function. Before updating the product's location details, the function checks whether the product is ready for shipping and whether the contract address matches the current contract address. Then, it updates the product's location details, sets the previous owner and contract address as the current owner and contract address, respectively, and sets the received status of the product as false. Finally, it emits the wineDispatched event.
+
 
 ### GoodsDistributor.sol
 
+  1. constructor(Product productContractAddress, FillerPacker fillerPackerAddress): This function is the constructor of the smart contract. It is executed only once when the contract is deployed to the blockchain network. It initializes the contract by setting the addresses of the Product and FillerPacker contracts.
+
+  2. getWineBatchStorage is a view function that returns an array of uint256 values representing the IDs of wine batches that have been received by the GoodsDistributor contract.
+
+  3. removeWineBatchFromStorage is a function that takes in a wineBatchId parameter and removes the corresponding ID from the wineBatchStorage array if it exists. The function checks whether the ID is within the bounds of the array, and if not, it returns without doing anything. Otherwise, it shifts all the elements after the ID one position to the left and pops the last element of the array.
+
+  4. materialReadyToShip is a function that takes in a productId parameter and sets the readyToShip status of the corresponding product to true in the productContract. The function checks whether the caller is the owner of the product, and whether the product is not already marked as ready to ship. If these conditions are met, the function sets the readyToShip status to true and emits the readyToShip event with the productId parameter.
+
+  5. buyWineFromFillerPacker: This function is used to buy a wine batch from the FillerPacker contract and update its ownership details. It takes in one parameter - the product ID. The function first checks whether the amount of ether sent by the buyer is sufficient to buy the wine batch. If the amount is insufficient, the function will throw an error message. Next, it calculates the product's price by multiplying the unit price by the batch quantity. The function then transfers the product price to the current owner's address using the transfer function. The target address is obtained using the getCurrentOwner function of the Product contract, and it is cast to an address payable type to enable the transfer function. Finally, the function emits the buyWineBatch event to indicate that the wine batch has been bought by the GoodsDistributor contract.
+
+  6. receiveWine: This function is used to receive wine from the previous owner and update its location details. It takes in three parameters - the product ID, current location, and arrival date. The ownerOnly modifier ensures that only the contract owner can execute this function. The function first checks whether the product is ready to ship and whether the contract address matches the current contract address. Then, it adds the previous location details to the product's history, updates the current location details, and sets the received and ready to ship status of the product as true and false, respectively. It also adds the product ID to the wineBatchStorage array and emits the wineBatchReceived event.
+
+  7. returnWine: This function is used to return wine to the previous owner and update its ownership and contract details. It takes in one parameter - the product ID. The ownerOnly modifier ensures that only the contract owner can execute this function. The function first checks whether the product has been received before it can be returned. Then, it updates the ownership and contract details of the product to the previous owner and contract address, respectively, and emits the returnedWine event.
+
+  8. refundWholesaler: This function is used to refund the wholesaler when a product is returned. It takes in one parameter - the product ID - and requires that the current owner is the sender. The function calculates the product price and ensures that the sent amount is greater than or equal to the product price. It then transfers the product price to the previous owner's address and emits the refundWine event.
+
+  9. dispatchWineToWholesaler: This function is used to dispatch a product to a wholesaler and update its location and ownership details. It takes in four parameters - the product ID, dispatch date, wholesaler address, and wholesaler contract address. The ownerOnly modifier ensures that only the contract owner can execute this function. The function first checks whether the product is ready to ship and whether the contract address matches the current contract address. Then, it sets the previous owner and contract address as the current owner and contract address, respectively, and sets the received status of the product as false. It also removes the product ID from the wineBatchStorage array and emits the dispatchWineBatch event.
+
+  10. removeWineBatch: This function is used to remove a product from the smart contract and the wineBatchStorage array. It takes in one parameter - the product ID - and requires that the current owner is the sender. The function removes the product from the productContract and wineBatchStorage array and emits the wineBatchRemoved event.
+
+  11. returnWineBatch: This function is used to return a batch of wine to the previous owner and update its ownership and contract details. It takes in one parameter - the product ID. The ownerOnly modifier ensures that only the contract owner can execute this function. The function first checks whether the product has been received before it can be returned. Then, it updates the ownership and contract details of the product to the previous owner and contract address, respectively. It also sets the previous owner and contract address as the current owner and contract address, respectively, and transfers the product price to the current owner's address. Finally, it emits the returnedWine event.
 
 ### Wholesaler.sol
 
+  1. constructor(Product productAddress, GoodsDistributor goodsDistributorAddress): This is the constructor function of the Wholesaler contract that initializes the productContract and goodsDistributorContract variables with the addresses of the deployed Product and GoodsDistributor contracts respectively. The owner variable is also set to the address of the sender.
+
+  2. buyWineFromGoodsDistributor: This function is used to buy wine from the GoodsDistributor contract. It takes in the productId parameter and requires that the sent value is greater than the price of the product. The function then transfers the product price to the current owner of the product and emits the buyWine event.
+
+  3. removeWine: This function is used to remove a product from the productContract. It takes in one parameter - the product ID - and requires that the current owner is the sender. The function removes the product from the productContract and emits the wineRemoved event.
+
+  4. materialReadyToShip: This function is used to set a product to "ready to ship" status. It takes in the productId parameter and requires that the current owner is the sender and the product is not already "ready to ship". The function sets the readyToShip status of the product to true and emits the readyToShip event.
+
+  5. receiveWine: This function is used to receive wine from the FillerPacker contract. It takes in the productId parameter, currentLocation and arrivalDate and requires that the product has not been received, is ready to ship, and the current contract address is the Wholesaler contract. The function adds the previous location of the product to the previousLocations mapping, sets the currentLocation of the product to the new currentLocation and arrivalDate, and sets the received and readyToShip status of the product to true. It emits the wineReceived event.
+
+  6. returnWine: This function is used to return wine to the previous owner of the product. It takes in the productId parameter and requires that the product has been received. The function sets the previousOwner and previousContractAddress of the product to the current owner and contract address respectively, and sets the currentOwner and currentContractAddress of the product to the previous owner and contract address respectively. It emits the returnedWine event.
+
+  7. refundRetailer: This function is used to refund a retailer for a returned product. It takes in the productId parameter and requires that the current owner is the sender. The function transfers the product price to the previous owner of the product and emits the refundWine event.
+
+  8. dispatchWineToRetailer: This function is used to dispatch wine to a retailer. It takes in the productId, newDisbatchDate, retailerAddress, and retailerContractAddress parameters and requires that the product is "ready to ship" and the current contract address is the Wholesaler contract. The function sets the previousOwner and previousContractAddress of the product to the current owner and contract address respectively, and sets the currentContractAddress of the product to the retailerContractAddress parameter. It also updates the currentLocation of the product with the new dispatch date, and sets the received status of the product to false. Finally, the currentOwner of the product is set to the retailerAddress parameter, and the dispatchWine event is emitted.
 
 ### Retailer.sol
+
+  1. constructor(Product productAddress, Wholesaler wholeSalerAddress): This is the constructor function for the Retailer contract. It takes in the addresses of the Product and Wholesaler contracts and initializes their instances in the Retailer contract.
+
+  2. getWineRemaining: This function takes in a wineBatchId as a parameter and returns the remaining quantity of wine in that batch.
+
+  3. buyWineFromWholesaler: This function allows the retailer to buy wine from the wholesaler. It takes in the productId as a parameter and requires the retailer to pay the total price of the batch of wine. The function then transfers the payment to the current owner of the product (i.e., the wholesaler) and emits a buyWineBatch event.
+
+  4. receiveWine: This function allows the retailer to receive wine from the filler/packer. It takes in the productId, the current location, and the arrival date as parameters. The function requires that the product has not already been received, is ready to ship, and the current contract address is the Retailer contract. It then updates the product's previous and current location, sets the product as received and not ready to ship, and emits a wineBatchReceived event.
+
+  5. returnWine: This function allows the retailer to return wine to the previous owner (e.g., the wholesaler). It takes in the productId as a parameter and requires that the product has already been received. The function then updates the product's current and previous owner and contract address and emits a returnedWine event.
+
+  6. sellWine: This function allows the retailer to sell a certain quantity of wine from a specific batch. It takes in the productId and the quantity as parameters and updates the remaining quantity of wine in that batch. It also emits a soldWine event.
+
+  7. removeWineBatch: This function allows the retailer to remove a specific batch of wine from the product list. It takes in the productId as a parameter and removes the product from the list. It also emits a wineBatchRemoved event.
+
+  8. returnWineBatch: This function allows the retailer to return a batch of wine to the previous owner (e.g., the wholesaler). It takes in the productId as a parameter and requires that the product has already been received and the previous owner is the current caller of the function. The function then transfers the payment to the current owner of the product (i.e., the retailer), updates the product's current and previous owner and contract address, and emits a returnedWine event.
 
 
 ## Deployment
