@@ -116,24 +116,68 @@ The following functions are available for each actor in the supply chain:
 
 ### RawMaterialSupplier.sol
 
-  1. addRawMaterial: This function is used to add new raw materials to the system. It takes in various parameters such as name, place of origin, production and expiration dates, unit quantity, unit quantity type, batch quantity, unit price, category and current physical location. It then creates a new product instance using the Product contract and sets the required information for the raw material.
+  1. constructor(Product productContractAddress): This is the constructor of the RawMaterialSupplier contract, which takes an address of an already deployed Product contract and sets it as the productContract.
 
-  2. removeRawMaterial: This function is used to remove raw materials from the system. It takes in the product ID of the raw material to be removed and calls the removeProduct function in the Product contract.
+  2. addRawMaterial: This function adds a new raw material to the Product contract. It takes various parameters like name, placeOfOrigin, productionDate, expirationDate, unitQuantity, unitQuantityType, batchQuantity, unitPrice, category, and currentPhysicalLocation. It then calls the createProduct() function of the productContract to create a new product and sets the values of the parameters. Finally, it emits the rawMaterialAdded event with the productId of the new product.
 
-  3. materialReadyToShip: This function is used to indicate that a raw material is ready for shipping. It takes in the product ID of the raw material and sets the readyToShip flag to true.
+  3. refundWineProducer: This function refunds the wine producer for the raw material that they have returned. It takes the productId of the raw material and checks if the msg.sender is the current owner of the product. If yes, it transfers the amount paid by the wine producer to the previous owner of the product. Finally, it emits the refundRawMaterial event with the productId.
 
-  4. dispatchRawMaterial: This function is used to dispatch a raw material to a wine producer. It takes in the product ID of the raw material, the new dispatch date, and the address of the wine producer and the wine producer contract address. It then sets the previous owner and contract address, updates the current location and owner, and emits an event indicating that the raw material has been dispatched.
+  4. removeRawMaterial: This function removes the raw material from the Product contract. It takes the productId of the raw material and checks if the msg.sender is the current owner of the product. If yes, it calls the removeProduct() function of the productContract to remove the product from the contract. Finally, it emits the rawMaterialRemoved event with the productId.
 
-  5. refundWineProducer: 
+  5. materialReadyToShip: This function updates the status of the raw material to ready for shipping. It takes the productId of the raw material and checks if the msg.sender is the current owner of the product. If yes, it calls the setReadyToShip() function of the productContract to update the status of the product. Finally, it emits the rawMaterialReadyToShip event with the productId.
+
+  6. dispatchRawMaterial: This function dispatches the raw material to the wine producer. It takes the productId, newDisbatchDate, wineProducerAddress, and wineProducerContractAddress. It checks if the raw material is ready to ship and if the msg.sender is the current owner of the product. If yes, it updates the previous owner and contract address of the product, sets the current contract address to the wineProducerContractAddress, updates the current location, sets the current owner to the wineProducerAddress, and finally, emits the rawMaterialDispatched event with the productId.
 
 
 ### WineProducer.sol
 
+  1. constructor(Product productContractddress, RawMaterialSupplier supplierContractAddress): A constructor that sets the addresses of the Product and RawMaterialSupplier contracts, which are required for interacting with the other contracts in the supply chain.
+
+  2. buy: A function that allows the wine producer to buy raw materials from the raw material supplier. The function checks that the wine producer has sufficient funds to make the purchase, and then transfers the funds to the current owner of the raw materials (i.e. the raw material supplier). It also emits an event buyRawMaterial.
+
+  3. received: A function that updates the status of the raw materials when they are received by the wine producer. The function sets the received status to true, updates the current and previous locations of the product, and emits an event rawMaterialReceived. This function is only accessible by the owner of the raw materials.
+
+  4. removeWine: A function that removes a wine product from the supply chain. The function emits an event wineRemoved. This function is only accessible by the owner of the wine product.
+
+  5. returnRawMaterials: A function that allows the wine producer to return raw materials to the previous owner (i.e. the raw material supplier). The function checks that the raw materials have been received, and then updates the ownership and contract addresses of the raw materials to the previous owner and contract. It emits an event returnedRawMaterial. This function is only accessible by the owner of the raw materials.
+
+  6. refundBulkDistributor: A function that allows the wine producer to refund a bulk distributor for a wine product. The function checks that the wine producer is the current owner of the product, and that they have sufficient funds to make the refund. It then transfers the funds to the previous owner of the product (i.e. the bulk distributor). It emits an event refundWine. This function is only accessible by the owner of the wine product.
+
+  7. wineReadyToShip: A function that sets the readyToShip status of a wine product to true. It emits an event WineReadyToShip. This function is only accessible by the owner of the wine product.
+
+  8. processWine: A function that creates a new wine product by processing raw materials. The function checks that all the required raw materials are available and have not been used before, and then creates a new wine product using the createProduct function from the Product contract. It also sets the place of origin, production date, expiration date, and current location of the wine product, and adds the raw materials as components of the wine product. It emits an event processedWine and returns the ID of the new wine product.
+
+  9. dispatchWineToBulkDistributor: A function that dispatches a wine product to a bulk distributor. The function checks that the wine product is ready to be shipped, and then updates the disbatch date and current location of the wine product to the address of the bulk distributor contract. It also sets the previous owner and contract address of the wine product, and emits an event dispatchWine.
+
 
 ### BulkDistributor.sol
 
+  1. Constructor(Product productAddress, WineProducer wineProducerAddress): A constructor function that takes in two parameters, the address of the Product contract and the address of the WineProducer contract. These addresses are stored in the state variables productContract and wineProducerContract respectively.
+
+  2. buyWineFromWineProducer: A function that allows the BulkDistributor to buy wine from the WineProducer. The function checks that the BulkDistributor has sufficient funds to make the purchase, based on the price of the product (unit price multiplied by batch quantity). If the funds are sufficient, the function transfers the payment to the WineProducer and emits an event buyWine.
+
+  3. removeWine: A function that allows the BulkDistributor to remove a product from the supply chain. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. If the caller is the current owner, the product is removed from the Product contract and an event wineRemoved is emitted.
+
+  4. receiveWine: A function that allows the BulkDistributor to receive wine from the WineProducer. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. It also checks that the product has not already been received, and that it is currently owned by the BulkDistributor. If these conditions are met, the function updates the current location and arrival date of the product in the Product contract, and emits an event wineReceived.
+
+  5. returnWine: A function that allows the BulkDistributor to return wine to the previous owner in the supply chain. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. It also checks that the product has been received by the BulkDistributor. If these conditions are met, the function updates the previous owner and previous contract address of the product in the Product contract, and emits an event returnedWine.
+
+  6. refundTransitCellar: A function that allows the BulkDistributor to refund a Transit Cellar for a returned product. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. It also checks that the product has been returned by the Transit Cellar, and that the funds provided by the Transit Cellar are sufficient to cover the cost of the product. If these conditions are met, the function transfers the payment to the previous owner of the product and emits an event refundWine.
+
+  7. materialReadyToShip: A function that allows the BulkDistributor to mark a product as ready for shipping. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. If the caller is the current owner, the product is marked as ready to ship in the Product contract and an event readyToShip is emitted.
+
+  8. dispatchWineToTransitCellar: A function that allows the BulkDistributor to dispatch wine to a Transit Cellar. The function checks that the caller of the function is the current owner of the product, by using the ownerOnly modifier. It also checks that the product is ready to ship and is currently owned by the BulkDistributor. If these conditions are met, the function updates the previous owner and previous contract address of the product in the Product contract, and sets the current owner and current contract address to the Transit Cellar's address and contract address respectively. The current location and dispatch date of the product are also updated in the Product contract. Finally, the function emits an event dispatchToTransitCellar to indicate that the product has been dispatched to the transit cellar.
+
 
 ### TransitCellar.sol
+
+  1. constructor(Product productContractAddress, BulkDistributor bulkDistributorAddress): A constructor function that takes in two parameters, the address of the Product contract and the address of the BulkDistributor contract. These addresses are stored in the state variables productContract and bulkDistributorContract respectively. The constructor function is marked as public and is executed only once when the contract is deployed.
+  2. getAnalysisDetails: a public function that takes in a productId and returns the analysis details of the product stored in the analysisDetails mapping.
+  3. buyWineFromBulkDistributor: a public payable function that takes in a productId and transfers the required amount of Ether to the bulk distributor to buy the wine. If the transferred amount is less than the product price, it reverts the transaction.
+  4. receiveWineFromBulkDistributor: a public payable function that takes in a productId, the current location and arrival date of the wine. It checks whether the caller is the current owner of the wine and whether the wine is not already received, ready to ship, and whether the current contract address matches the product's current contract address. It then sets the wine as received, not ready to ship, and sets the previous location details before emitting a wineReceived event.
+  5. returnWine: a public payable function that takes in a productId and returns the wine to the previous owner and contract address of the wine. It then emits a wineReturned event.
+  6. refundFillerPacker: a public payable function that takes in a productId and refunds the filler packer the amount they paid for the product. It then emits a wineRefunded event.
+  7. removeWine: a public function that takes in a productId and removes the product from the products. It then emits a wineRemoved event.
 
 
 ### FillerPacker.sol
@@ -159,7 +203,9 @@ Compile the Solidity contract: truffle compile
 
 Deploy the contract to the local blockchain: truffle migrate
 
-Run the tests: truffle test test_supplyChain.js
+Run the tests: 
+  - truffle test test_supplyChain.js 
+  - truffle test test_refunds.js 
 
 This will execute the test_supplyChain.js file, which contains a series of tests to ensure that the smart contract functions as expected.
 
