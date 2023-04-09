@@ -447,4 +447,8 @@ contract Product {
         // products[productId].readyToShip = true;
     }
 
+    function getComponentProductIds(uint256 productId) public view validProductId(productId) returns (uint256[] memory) {
+        return products[productId].componentProductIds;
+    }
+
 }

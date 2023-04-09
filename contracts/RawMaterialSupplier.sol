@@ -13,7 +13,7 @@ contract RawMaterialSupplier {
     event rawMaterialAdded(uint productId);
     event rawMaterialRemoved(uint productId);
     event rawMaterialReadyToShip(uint productId);
-    event rawMaterialDisbatched(uint productId);
+    event rawMaterialDispatched(uint productId);
     event refundRawMaterial(uint productId);
     
 
@@ -93,6 +93,6 @@ contract RawMaterialSupplier {
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
         productContract.setCurrentOwner(productId, wineProducerAddress);
-        emit rawMaterialDisbatched(productId);
+        emit rawMaterialDispatched(productId);
     }    
 }

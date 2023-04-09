@@ -19,7 +19,7 @@ contract WineProducer {
     event returnedRawMaterial(uint productId);
     event refundWine(uint productId);
     event WineReadyToShip(uint productId);
-    event WineDisbatched(uint productId);
+    event WineDispatched(uint productId);
     event rawMaterialReceived(uint productId);
 
     //modifiers
@@ -94,14 +94,14 @@ contract WineProducer {
     }
 
 
-    function wineReadyToShip(uint256 productId, string memory newLocation) public ownerOnly(productId) {
+    function wineReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
-        require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
+        // require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
 
         productContract.setReadyToShip(productId, true);
-        (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
-        productContract.setCurrentLocation(productId, newLocation, "", "");
+        // (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
+        // productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
+        // productContract.setCurrentLocation(productId, newLocation, "", "");
         emit WineReadyToShip(productId);
     }
 
@@ -168,12 +168,12 @@ contract WineProducer {
         require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
         
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, bulkDistributorAddress);
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, bulkDistributorContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+        productContract.setCurrentOwner(productId, bulkDistributorAddress);
 
-        emit WineDisbatched(productId);
+        emit WineDispatched(productId);
     }
 }

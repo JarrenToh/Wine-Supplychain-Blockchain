@@ -32,13 +32,13 @@ contract BulkDistributor {
 
 
     //buy
-    function buyWineFromWineProducer(uint256 productId, string memory dispatchDate) public payable {
+    function buyWineFromWineProducer(uint256 productId) public payable {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent amount to buy the wine");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        wineProducerContract.dispatchWineToBulkDistributor(productId, dispatchDate, msg.sender, address(this));
+        // wineProducerContract.dispatchWineToBulkDistributor(productId, dispatchDate, msg.sender, address(this));
         emit buyWine(productId);
 
     }
