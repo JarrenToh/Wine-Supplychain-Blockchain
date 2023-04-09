@@ -1,7 +1,6 @@
 const _deploy_contracts = require("../migrations/2_deploy_contracts.js");
 const truffleAssert = require('truffle-assertions');
 var assert = require("assert");
-const Web3Utils = require('web3-utils');
 
 
 var Product = artifacts.require("../contracts/Product.sol");
@@ -251,7 +250,7 @@ contract('Refund', function (accounts) {
         let refund = await rawMaterialSupplierInstance.refundWineProducer(3, { from: accounts[1], value : 1E18 })
         const afterBalance = await web3.eth.getBalance(accounts[1]);
         const afterBalance2 = await web3.eth.getBalance(accounts[2]);
-        const diff = new Web3Utils.BN(afterBalance2).sub(new Web3Utils.BN(balance2));
+        const diff = web3.utils.toBN(afterBalance2).sub(web3.utils.toBN(balance2));
         console.log(`Account balance of accounts[1]: ${balance}`);
         console.log(`Account balance of accounts[1]: ${afterBalance}`);
         console.log(`Account balance of accounts[2]: ${balance2}`);
@@ -428,7 +427,7 @@ contract('Refund', function (accounts) {
         let refund = await wineProducerInstance.refundBulkDistributor(4, { from: accounts[2], value : 1E18 })
         const afterBalance = await web3.eth.getBalance(accounts[2]);
         const afterBalance2 = await web3.eth.getBalance(accounts[3]);
-        const diff = new Web3Utils.BN(afterBalance2).sub(new Web3Utils.BN(balance2));
+        const diff = web3.utils.toBN(afterBalance2).sub(web3.utils.toBN(balance2));
         console.log(`Account balance of accounts[2]: ${balance}`);
         console.log(`Account balance of accounts[2]: ${afterBalance}`);
         console.log(`Account balance of accounts[3]: ${balance2}`);
