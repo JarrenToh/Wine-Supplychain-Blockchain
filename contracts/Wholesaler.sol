@@ -32,13 +32,13 @@ contract Wholesaler {
 
 
     //buy
-    function buyWineFromGoodsDistributor(uint256 productId, string memory dispatchDate) public payable {
+    function buyWineFromGoodsDistributor(uint256 productId) public payable {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent amount to buy the wine");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        goodsDistributorContract.dispatchWineToWholesaler(productId, dispatchDate, msg.sender, address(this));
+        //goodsDistributorContract.dispatchWineToWholesaler(productId, dispatchDate, msg.sender, address(this));
         emit buyWine(productId);
 
     }
@@ -108,7 +108,6 @@ contract Wholesaler {
         require(productContract.getCurrentContractAddress(productId) == address(this));
 
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, retailerAddress);
 
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId,retailerContractAddress);
@@ -117,6 +116,7 @@ contract Wholesaler {
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
 
         productContract.setReceived(productId, false);
+        productContract.setCurrentOwner(productId, retailerAddress);
 
         emit dispatchWine(productId);
     }

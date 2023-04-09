@@ -16,8 +16,9 @@ contract GoodsDistributor {
     event returnedWine(uint256 wineBatchId);
     event refundWine(uint256 wineBatchId);
     event wineBatchRemoved(uint256 wineBatchId);
+    event readyToShip(uint productId);
 
-    uint256[] public wineBatchStorage;
+    uint256[] private wineBatchStorage;
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -28,6 +29,10 @@ contract GoodsDistributor {
     constructor(Product productAddress, FillerPacker fillerPackerAddress) public {
         productContract = productAddress;
         fillerPackerContract = fillerPackerAddress;
+    }
+
+    function getWineBatchStorage() public view returns (uint256[] memory) {
+        return wineBatchStorage;
     }
 
     function removeWineBatchFromStorage(uint wineBatchId) public {
@@ -42,16 +47,18 @@ contract GoodsDistributor {
     function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
         productContract.setReadyToShip(productId, true);
+
+        emit readyToShip(productId);
     }
 
     //buy wine batch from fillerpacker
-    function buyWineFromFillerPacker(uint256 productId, string memory dispatchDate) public payable {
+    function buyWineFromFillerPacker(uint256 productId) public payable {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent amount to buy the wine batch");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        fillerPackerContract.dispatchWineToGoodsDistributor(productId, dispatchDate, msg.sender, address(this));
+        //fillerPackerContract.dispatchWineToGoodsDistributor(productId, dispatchDate, msg.sender, address(this));
         emit buyWineBatch(productId);
     }
 
@@ -110,7 +117,6 @@ contract GoodsDistributor {
         require(productContract.getCurrentContractAddress(productId) == address(this));
 
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, wholeSalerAddress);
 
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, wholeSalerContractAddress);
@@ -128,6 +134,7 @@ contract GoodsDistributor {
             }
         }
        
+        productContract.setCurrentOwner(productId, wholeSalerAddress);
         emit dispatchWineBatch(productId);
     }
 
@@ -141,7 +148,6 @@ contract GoodsDistributor {
         }
         emit wineBatchRemoved(productId);
     }
-<<<<<<< HEAD
 
     function returnWineBatch(uint256 productId) public payable ownerOnly(productId) {
 
@@ -159,10 +165,7 @@ contract GoodsDistributor {
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
 
-        emit returnedWineBatch(productId);
+        emit returnedWine(productId);
     }
 
-
-=======
->>>>>>> a260fd1a65918933d7fb36a4b1d97da085e98930
 }

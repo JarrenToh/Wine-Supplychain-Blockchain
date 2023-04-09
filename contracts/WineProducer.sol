@@ -115,7 +115,7 @@ contract WineProducer {
         bool allAvailableToUse = true;
         for (uint256 i = 0; i < productIds.length; i++) {
             if (productContract.getUsed((productIds[i])) == true) {
-                allAvailableToUse == false;
+                allAvailableToUse = false;
                 break;
             }
         }
@@ -162,8 +162,8 @@ contract WineProducer {
         productContract.setCurrentContractAddress(productId, bulkDistributorContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
-        productContract.setCurrentOwner(productId, bulkDistributorAddress);
         productContract.setReceived(productId, false);
+        productContract.setCurrentOwner(productId, bulkDistributorAddress);
         emit WineDisbatched(productId);
     }
 }
