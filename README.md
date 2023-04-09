@@ -1,6 +1,9 @@
 # Wine Supply Chain Smart Contract
 This smart contract is designed to implement a supply chain for the production and distribution of wine, from the grape grower to the retailer. The supply chain consists of several stages, including grape growing, wine production, bulk distribution, transit storage, filling/packaging, goods distribution, wholesaling, and retailing. Each stage is represented by a different actor in the supply chain and has its own set of functions and responsibilities
 
+### Activity Diagram
+![Uploading image.png…]()
+
 ## Requirement
 
 Ganache: A personal blockchain for Ethereum development.
