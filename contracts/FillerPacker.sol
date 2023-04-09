@@ -26,6 +26,7 @@ contract FillerPacker {
     event wineReturned(uint productId);
     event wineRemoved(uint productId);
     event wineRefunded(uint productId);
+    event readyToShip(uint productId);
 
     //modifiers
     modifier ownerOnly(uint256 productId) {
@@ -47,13 +48,13 @@ contract FillerPacker {
     }
 
     //Buy wine from transit cellar
-    function buyWineFromTransitCellar(uint256 productId, string memory dispatchDate) public payable {
+    function buyWineFromTransitCellar(uint256 productId) public payable {
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent amount to buy the wine");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        transitCellarContract.dispatchWineToFillerPacker(productId, dispatchDate, msg.sender, address(this));
+        //transitCellarContract.dispatchWineToFillerPacker(productId, dispatchDate, msg.sender, address(this));
         emit wineBought(productId);
     }
 
@@ -124,6 +125,8 @@ contract FillerPacker {
     function materialReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
         productContract.setReadyToShip(productId, true);
+
+        emit readyToShip(productId);
     }
 
     //Dispatch wine to goods distributor

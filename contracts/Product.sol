@@ -159,6 +159,12 @@ contract Product {
         products[mainProductId].componentProductIds.push(productId);
     }
 
+    function getComponentProductIds (
+        uint256 mainProductId
+    ) public view validProductId(mainProductId) returns (uint256[] memory) {
+        return products[mainProductId].componentProductIds;
+    }
+
     //transfer ownership when it moves from one entity to another entity in the supplychain
     function transferProduct(
         uint256 productId,

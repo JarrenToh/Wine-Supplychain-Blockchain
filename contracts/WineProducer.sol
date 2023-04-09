@@ -31,18 +31,13 @@ contract WineProducer {
 
     function buy(
         uint256 productId
-    ) public payable {
+    ) public payable returns(uint256) {
+
         uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
         require(msg.value > productPrice, "Insufficent balance to buy the supply");
         address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
         targetAddress.transfer(productPrice);
 
-        // rawMaterialSupplierContract.disbatchRawMaterial(
-        //     productId, 
-        //     disbatchDate, 
-        //     msg.sender,
-        //     address(this)
-        // );
         emit buyRawMaterial(productId);
     }
 
@@ -96,12 +91,9 @@ contract WineProducer {
 
     function wineReadyToShip(uint256 productId) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == false, "Product is already ready for shipping");
-        // require(keccak256(abi.encodePacked(productContract.getProductName(productId))) == keccak256(abi.encodePacked("Wine")), "You can only ship wine products");
 
         productContract.setReadyToShip(productId, true);
-        // (string memory location, string memory disbatchDate, string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        // productContract.addPreviousLocation(productId, location, disbatchDate, arrivalDate);
-        // productContract.setCurrentLocation(productId, newLocation, "", "");
+    
         emit WineReadyToShip(productId);
     }
 
@@ -123,7 +115,7 @@ contract WineProducer {
         bool allAvailableToUse = true;
         for (uint256 i = 0; i < productIds.length; i++) {
             if (productContract.getUsed((productIds[i])) == true) {
-                allAvailableToUse == false;
+                allAvailableToUse = false;
                 break;
             }
         }
@@ -153,8 +145,6 @@ contract WineProducer {
             productContract.addComponentProduct(wineProductId, productId);
         }
 
-    
-
         //Use up all the materials
         for (uint256 i = 0; i < productIds.length; i++) {
             productContract.setUsed(productIds[i], true);
@@ -172,8 +162,8 @@ contract WineProducer {
         productContract.setCurrentContractAddress(productId, bulkDistributorContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
         productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+        productContract.setReceived(productId, false);
         productContract.setCurrentOwner(productId, bulkDistributorAddress);
-
-        emit WineDispatched(productId);
+        emit WineDisbatched(productId);
     }
 }
