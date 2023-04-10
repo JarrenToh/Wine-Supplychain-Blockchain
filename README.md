@@ -75,9 +75,9 @@ The following functions are available for each actor in the supply chain:
 
   17. getProductionDate: This function returns the production date of the product with the given productId.
 
-  18: setProductionDate: This function sets the production date of the product with the given productId to the new value newProductionDate.
+  18. setProductionDate: This function sets the production date of the product with the given productId to the new value newProductionDate.
 
-  19: getExpirationDate: This function returns the expiration date of the product with the given productId.
+  19. getExpirationDate: This function returns the expiration date of the product with the given productId.
 
   20. setExpirationDate: This function sets the expiration date of the product with the given productId to the new value newExpirationDate.
 
@@ -133,7 +133,7 @@ The following functions are available for each actor in the supply chain:
 
   5. materialReadyToShip: This function updates the status of the raw material to ready for shipping. It takes the productId of the raw material and checks if the msg.sender is the current owner of the product. If yes, it calls the setReadyToShip() function of the productContract to update the status of the product. Finally, it emits the rawMaterialReadyToShip event with the productId.
 
-  6. dispatchRawMaterial: This function dispatches the raw material to the wine producer. It takes the productId, newDisbatchDate, wineProducerAddress, and wineProducerContractAddress. It checks if the raw material is ready to ship and if the msg.sender is the current owner of the product. If yes, it updates the previous owner and contract address of the product, sets the current contract address to the wineProducerContractAddress, updates the current location, sets the current owner to the wineProducerAddress, and finally, emits the rawMaterialDispatched event with the productId.
+  6. dispatchRawMaterial: This function dispatches the raw material to the wine producer. It takes the productId, newDispatchDate, wineProducerAddress, and wineProducerContractAddress. It checks if the raw material is ready to ship and if the msg.sender is the current owner of the product. If yes, it updates the previous owner and contract address of the product, sets the current contract address to the wineProducerContractAddress, updates the current location, sets the current owner to the wineProducerAddress, and finally, emits the rawMaterialDispatched event with the productId.
 
 
 ### WineProducer.sol
@@ -211,20 +211,21 @@ The following functions are available for each actor in the supply chain:
 
   5. buyWineFromTransitCellar: This function is used to buy wine from the TransitCellar contract by sending ether to the contract. It takes a product ID as input and the caller must send enough ether to cover the cost of the product.
 
-
   6. receiveWineFromTransitCellar: This function is used to receive wine from the TransitCellar contract and update the product's location details. It takes a product ID, the current location, and the arrival date as inputs. The "ownerOnly" modifier ensures that only the contract owner can execute this function.
 
   7. returnWine: This function is used to return wine to the TransitCellar contract and update the product's location details. It takes a product ID as input and the caller must send enough ether to cover the cost of returning the product.
 
-  8. refundFillerPacker: This function is used to refund the GoodsDistributor for a product. It takes a product ID as input and the caller must send enough ether to cover the cost of the refund. The "ownerOnly" modifier ensures that only the contract owner can execute this function.
+  8. refundGoodsDistributor: This function is used to refund the GoodsDistributor for a product. It takes a product ID as input and the caller must send enough ether to cover the cost of the refund. The "ownerOnly" modifier ensures that only the contract owner can execute this function.
 
-  9. packageWine: This function is used to store the packaging details of a product. It takes a product ID and the packaging details as inputs and updates the packaging details associated with that product.
+  9. removeWine: This function allows the filler packer owner to remove a product from the products list. An event is emitted once the product is removed.
 
-  10.  labelWine: This function is used to store the label details of a product. It takes a product ID and the label details as inputs and updates the label details associated with that product.
+  10. packageWine: This function is used to store the packaging details of a product. It takes a product ID and the packaging details as inputs and updates the packaging details associated with that product.
 
-  11. materialReadyToShip: This function is used to set a product as ready to ship to the GoodsDistributor. It takes a product ID as input and the "ownerOnly" modifier ensures that only the contract owner can execute this function.
+  11. labelWine: This function is used to store the label details of a product. It takes a product ID and the label details as inputs and updates the label details associated with that product.
 
-  12. dispatchWineToGoodsDistributor: This function is used to dispatch a product to the GoodsDistributor and update its location details. It takes in four parameters - the product ID, dispatch date, new owner address, and new contract address. The ownerOnly modifier ensures that only the contract owner can execute this function. Before updating the product's location details, the function checks whether the product is ready for shipping and whether the contract address matches the current contract address. Then, it updates the product's location details, sets the previous owner and contract address as the current owner and contract address, respectively, and sets the received status of the product as false. Finally, it emits the wineDispatched event.
+  12. materialReadyToShip: This function is used to set a product as ready to ship to the GoodsDistributor. It takes a product ID as input and the "ownerOnly" modifier ensures that only the contract owner can execute this function.
+
+  13. dispatchWineToGoodsDistributor: This function is used to dispatch a product to the GoodsDistributor and update its location details. It takes in four parameters - the product ID, dispatch date, new owner address, and new contract address. The ownerOnly modifier ensures that only the contract owner can execute this function. Before updating the product's location details, the function checks whether the product is ready for shipping and whether the contract address matches the current contract address. Then, it updates the product's location details, sets the previous owner and contract address as the current owner and contract address, respectively, and sets the received status of the product as false. Finally, it emits the wineDispatched event.
 
 
 ### GoodsDistributor.sol
@@ -267,7 +268,7 @@ The following functions are available for each actor in the supply chain:
 
   7. refundRetailer: This function is used to refund a retailer for a returned product. It takes in the productId parameter and requires that the current owner is the sender. The function transfers the product price to the previous owner of the product and emits the refundWine event.
 
-  8. dispatchWineToRetailer: This function is used to dispatch wine to a retailer. It takes in the productId, newDisbatchDate, retailerAddress, and retailerContractAddress parameters and requires that the product is "ready to ship" and the current contract address is the Wholesaler contract. The function sets the previousOwner and previousContractAddress of the product to the current owner and contract address respectively, and sets the currentContractAddress of the product to the retailerContractAddress parameter. It also updates the currentLocation of the product with the new dispatch date, and sets the received status of the product to false. Finally, the currentOwner of the product is set to the retailerAddress parameter, and the dispatchWine event is emitted.
+  8. dispatchWineToRetailer: This function is used to dispatch wine to a retailer. It takes in the productId, newDispatchDate, retailerAddress, and retailerContractAddress parameters and requires that the product is "ready to ship" and the current contract address is the Wholesaler contract. The function sets the previousOwner and previousContractAddress of the product to the current owner and contract address respectively, and sets the currentContractAddress of the product to the retailerContractAddress parameter. It also updates the currentLocation of the product with the new dispatch date, and sets the received status of the product to false. Finally, the currentOwner of the product is set to the retailerAddress parameter, and the dispatchWine event is emitted.
 
 ### Retailer.sol
 
