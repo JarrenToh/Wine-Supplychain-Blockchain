@@ -1,6 +1,6 @@
 
 # Wine Supply Chain Smart Contract
-This smart contract is designed to implement a supply chain for the production and distribution of wine, from the grape grower to the retailer. The supply chain consists of several stages, including grape growing, wine production, bulk distribution, transit storage, filling/packaging, goods distribution, wholesaling, and retailing. Each stage is represented by a different actor in the supply chain and has its own set of functions and responsibilities
+The Wine Supply Chain Smart Contract is created to establish a supply chain for the production and distribution of wine, starting from the raw material suppliers and ending at the retailer. The supply chain consists of various stages, including raw material suppliers, wine production, bulk distribution, transit storage, filling/packaging, goods distribution, wholesaling, and retailing. Each stage is represented by a different actor in the supply chain and has its own unique functions and responsibilities.
 
 ### Activity Diagram
 
@@ -19,7 +19,7 @@ Visual Studio Code: Integrated Development Environment
 ## Actors
 The actors in the supply chain are as follows:
 
-  GrapeGrower: This actor is responsible for growing and harvesting the grapes that will be used to produce wine.
+  RawMaterialSupplier: This actor is responsible for supplying ingredients that will be used to produce wine.
   
   WineProducer: This actor is responsible for transforming the grapes into wine, including fermentation and aging.
   
