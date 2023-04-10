@@ -103,7 +103,7 @@ contract BulkDistributor {
     }
 
     //dispatch to Transit Cellar
-    function dispatchWineToTransitCellar(uint256 productId, string memory newDisbatchDate, address transitCellarAddress, address transitCellarContractAddress) public ownerOnly(productId) {
+    function dispatchWineToTransitCellar(uint256 productId, string memory newDispatchDate, address transitCellarAddress, address transitCellarContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         require(productContract.getCurrentContractAddress(productId) == address(this));
 
@@ -113,7 +113,7 @@ contract BulkDistributor {
         productContract.setCurrentContractAddress(productId,transitCellarContractAddress);
 
         (string memory location, ,string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+        productContract.setCurrentLocation(productId, location, newDispatchDate, arrivalDate);
 
         productContract.setReceived(productId, false);
         productContract.setCurrentOwner(productId, transitCellarAddress);

@@ -5,8 +5,8 @@ import "./Product.sol";
 contract RawMaterialSupplier {
     Product productContract;
     address rawMaterialSupplierContractOwner = msg.sender;
-    constructor(Product productContractddress) public {
-        productContract = productContractddress;
+    constructor(Product productContractAddress) public {
+        productContract = productContractAddress;
     }
 
     //events
@@ -85,13 +85,13 @@ contract RawMaterialSupplier {
         emit rawMaterialReadyToShip(productId);
     }
     
-    function dispatchRawMaterial(uint256 productId, string memory newDisbatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
+    function dispatchRawMaterial(uint256 productId, string memory newDispatchDate, address wineProducerAddress, address wineProducerContractAddress) public ownerOnly(productId) {
         require(productContract.getReadyToShip(productId) == true, "Product not ready for shipping");
         productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
         productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
         productContract.setCurrentContractAddress(productId, wineProducerContractAddress);
         (string memory location, , string memory arrivalDate) = productContract.getCurrentLocation(productId);
-        productContract.setCurrentLocation(productId, location, newDisbatchDate, arrivalDate);
+        productContract.setCurrentLocation(productId, location, newDispatchDate, arrivalDate);
         productContract.setCurrentOwner(productId, wineProducerAddress);
         emit rawMaterialDispatched(productId);
     }    
