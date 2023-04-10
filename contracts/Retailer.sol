@@ -27,8 +27,8 @@ contract Retailer {
         wholeSalerContract = wholeSalerAddress;
     }
 
-    function getWineRemaining(uint256 wineBatchId) public view returns(uint256) {
-       return wineRemainingInBatch[wineBatchId];
+    function getWineRemaining(uint256 productId) public view returns(uint256) {
+       return wineRemainingInBatch[productId];
     }
 
     //buy wine batch from wholesaler
@@ -88,22 +88,4 @@ contract Retailer {
         emit wineBatchRemoved(productId);
     }
 
-     function returnWineBatch(uint256 productId) public payable ownerOnly(productId) {
-
-        require(productContract.getReceived(productId) == true, "Product is not yet received for return");
-        require(productContract.getPreviousOwner(productId) == msg.sender, "Unable to refund items");
-
-        //Transfer back the amt
-        uint256 productPrice = productContract.getUnitPrice(productId) * productContract.getBatchQuantity(productId);
-        require(msg.value >= productPrice, "Insufficent amount for refund");
-        address payable targetAddress = address(uint160(productContract.getCurrentOwner(productId)));
-        targetAddress.transfer(productPrice);
-
-        productContract.setPreviousOwner(productId, productContract.getCurrentOwner(productId));
-        productContract.setCurrentOwner(productId, msg.sender);
-        productContract.setPreviousContractAddress(productId, productContract.getCurrentContractAddress(productId));
-        productContract.setCurrentContractAddress(productId, productContract.getPreviousContractAddress(productId));
-
-        emit returnedWine(productId);
-    }
 }
