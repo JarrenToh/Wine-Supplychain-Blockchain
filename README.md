@@ -250,8 +250,6 @@ The following functions are available for each actor in the supply chain:
 
   10. removeWineBatch: This function is used to remove a product from the smart contract and the wineBatchStorage array. It takes in one parameter - the product ID - and requires that the current owner is the sender. The function removes the product from the productContract and wineBatchStorage array and emits the wineBatchRemoved event.
 
-  11. returnWineBatch: This function is used to return a batch of wine to the previous owner and update its ownership and contract details. It takes in one parameter - the product ID. The ownerOnly modifier ensures that only the contract owner can execute this function. The function first checks whether the product has been received before it can be returned. Then, it updates the ownership and contract details of the product to the previous owner and contract address, respectively. It also sets the previous owner and contract address as the current owner and contract address, respectively, and transfers the product price to the current owner's address. Finally, it emits the returnedWine event.
-
 ### Wholesaler.sol
 
   1. constructor(Product productAddress, GoodsDistributor goodsDistributorAddress): This is the constructor function of the Wholesaler contract that initializes the productContract and goodsDistributorContract variables with the addresses of the deployed Product and GoodsDistributor contracts respectively. The owner variable is also set to the address of the sender.
@@ -285,8 +283,6 @@ The following functions are available for each actor in the supply chain:
   6. sellWine: This function allows the retailer to sell a certain quantity of wine from a specific batch. It takes in the productId and the quantity as parameters and updates the remaining quantity of wine in that batch. It also emits a soldWine event.
 
   7. removeWineBatch: This function allows the retailer to remove a specific batch of wine from the product list. It takes in the productId as a parameter and removes the product from the list. It also emits a wineBatchRemoved event.
-
-  8. returnWineBatch: This function allows the retailer to return a batch of wine to the previous owner (e.g., the wholesaler). It takes in the productId as a parameter and requires that the product has already been received and the previous owner is the current caller of the function. The function then transfers the payment to the current owner of the product (i.e., the retailer), updates the product's current and previous owner and contract address, and emits a returnedWine event.
 
 
 ## Deployment
