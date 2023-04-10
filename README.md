@@ -8,6 +8,8 @@ The Wine Supply Chain Smart Contract is created to establish a supply chain for 
 
 ### Class Diagram
 
+![image](https://user-images.githubusercontent.com/89383093/230837007-67eebd79-e431-4892-b5fb-3802967921ec.png)
+
 ## Requirement
 
 Ganache: A personal blockchain for Ethereum development.
