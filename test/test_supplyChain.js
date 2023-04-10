@@ -161,7 +161,7 @@ contract('SupplyChain', function (accounts) {
     it('Dispatch raw materials to wine producer', async () => {
         let dispatchToWineProducer = await rawMaterialSupplierInstance.dispatchRawMaterial(0, "8/4/2023", accounts[2], wineProducerInstance.address, { from: accounts[1] });
 
-        truffleAssert.eventEmitted(dispatchToWineProducer, "rawMaterialDisbatched");
+        truffleAssert.eventEmitted(dispatchToWineProducer, "rawMaterialDispatched");
 
         let dispatchDateResult = await productInstance.getCurrentLocation(0);
         let dispatchDate = dispatchDateResult[1];

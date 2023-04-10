@@ -90,7 +90,7 @@ contract FillerPacker {
     }
 
     //Refund money to goods distributor
-    function refundFillerPacker(uint256 productId) public payable ownerOnly(productId) {
+    function refundGoodsDistributor(uint256 productId) public payable ownerOnly(productId) {
 
         require(productContract.getCurrentOwner(productId) == msg.sender, "Unable to refund items");
 

@@ -28,13 +28,13 @@ contract Product {
 
     struct productLocation {
         string location;
-        string disbatchDate;
+        string dispatchDate;
         string arrivalDate;
     }
 
     //variables
-    uint256 public noProduct = 0;
-    uint256 public noLocation = 0;
+    uint256 public noOfProduct = 0;
+    uint256 public noOfLocation = 0;
     mapping(uint256 => product) private products;
     mapping(uint256 => productLocation) private location;
 
@@ -53,7 +53,7 @@ contract Product {
     }
 
     modifier validProductId(uint256 productId) {
-        require(productId < noProduct);
+        require(productId < noOfProduct);
         _;
     }
 
@@ -74,7 +74,7 @@ contract Product {
     //     require(bytes(name).length > 0, "Name cannot be empty");
 
     //     //create new product
-    //     uint256 newProductId = noProduct++;
+    //     uint256 newProductId = noOfProduct++;
     //     products[newProductId] = product({
     //         componentProductIds: new uint256[](0),
     //         productId: newProductId,
@@ -96,7 +96,7 @@ contract Product {
     //         previousLocationIds: new uint256[](0),
     //         currentLocation: productLocation({
     //             location: currentPhysicalLocation,
-    //             disbatchDate: "null",
+    //             dispatchDate: "null",
     //             arrivalDate: "null"
     //         }),
     //         readyToShip: false
@@ -118,8 +118,8 @@ contract Product {
         require(bytes(name).length > 0, "Name cannot be empty");
 
         //create new product
-        uint256 newProductId = noProduct++;
-       // uint256 newProductId = noProduct;
+        uint256 newProductId = noOfProduct++;
+       // uint256 newProductId = noOfProduct;
         product memory newProduct = product({
             componentProductIds: new uint256[](0),
             productId: newProductId,
@@ -141,7 +141,7 @@ contract Product {
             previousLocationIds: new uint256[](0),
             currentLocation: productLocation({
                 location: "",
-                disbatchDate: "",
+                dispatchDate: "",
                 arrivalDate: ""
             }),
             readyToShip: false
@@ -390,7 +390,7 @@ contract Product {
         return (
             location[products[productId].previousLocationIds[index]].location,
             location[products[productId].previousLocationIds[index]]
-                .disbatchDate,
+                .dispatchDate,
             location[products[productId].previousLocationIds[index]].arrivalDate
         );
     }
@@ -398,13 +398,13 @@ contract Product {
     function addPreviousLocation(
         uint256 productId,
         string memory prevLocation,
-        string memory prevDisbatchDate,
+        string memory prevDispatchDate,
         string memory prevArrivalDate
     ) public ownerOnly(productId) validProductId(productId) {
-        uint256 newLocationId = noLocation++;
+        uint256 newLocationId = noOfLocation++;
         location[newLocationId] = productLocation({
             location: prevLocation,
-            disbatchDate: prevDisbatchDate,
+            dispatchDate: prevDispatchDate,
             arrivalDate: prevArrivalDate
         });
         products[productId].previousLocationIds.push(newLocationId);
@@ -420,7 +420,7 @@ contract Product {
     {
         return (
             products[productId].currentLocation.location,
-            products[productId].currentLocation.disbatchDate,
+            products[productId].currentLocation.dispatchDate,
             products[productId].currentLocation.arrivalDate
         );
     }
@@ -428,12 +428,12 @@ contract Product {
     function setCurrentLocation(
         uint256 productId,
         string memory newLocation,
-        string memory newDisbatchDate,
+        string memory newDispatchDate,
         string memory newArrivalDate
     ) public ownerOnly(productId) validProductId(productId) {
         products[productId].currentLocation = productLocation({
             location: newLocation,
-            disbatchDate: newDisbatchDate,
+            dispatchDate: newDispatchDate,
             arrivalDate: newArrivalDate
         });
     }
