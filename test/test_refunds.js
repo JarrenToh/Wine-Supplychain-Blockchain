@@ -92,13 +92,13 @@ contract('Refund', function (accounts) {
         // await assert.notStrictEqual(
         //     sugar,
         //     undefined,
-        //     "Failed to Add Grapes"
+        //     "Failed to Add Sugar"
         // );
 
         // await assert.notStrictEqual(
         //     yeast,
         //     undefined,
-        //     "Failed to Add Grapes"
+        //     "Failed to Add Yeast"
         // );
 
         await assert.strictEqual(
@@ -107,7 +107,6 @@ contract('Refund', function (accounts) {
             "Raw material owner is incorrect"
         );
 
-        // truffleAssert.eventEmitted(grapes, "ProductCreated");
         truffleAssert.eventEmitted(grapes, "rawMaterialAdded");
         truffleAssert.eventEmitted(sugar, "rawMaterialAdded");
         truffleAssert.eventEmitted(yeast, "rawMaterialAdded");
@@ -143,10 +142,10 @@ contract('Refund', function (accounts) {
 
         const afterBalance = await web3.eth.getBalance(accounts[1]);
         const afterBalance2 = await web3.eth.getBalance(accounts[2]);
-        console.log(`Account balance of accounts[1]: ${balance}`);
-        console.log(`Account balance of accounts[1]: ${afterBalance}`);
-        console.log(`Account balance of accounts[2]: ${balance2}`);
-        console.log(`Account balance of accounts[2]: ${afterBalance2}`);
+        console.log(`Account balance of raw material supplier: ${balance}`);
+        console.log(`Account balance of raw material supplier: ${afterBalance}`);
+        console.log(`Account balance of wine producer: ${balance2}`);
+        console.log(`Account balance of wine producer: ${afterBalance2}`);
 
         truffleAssert.eventEmitted(buyGrapes, "buyRawMaterial");
         truffleAssert.eventEmitted(buySugar, "buyRawMaterial");
@@ -251,17 +250,10 @@ contract('Refund', function (accounts) {
         const afterBalance = await web3.eth.getBalance(accounts[1]);
         const afterBalance2 = await web3.eth.getBalance(accounts[2]);
         const diff = web3.utils.toBN(afterBalance2).sub(web3.utils.toBN(balance2));
-        console.log(`Account balance of accounts[1]: ${balance}`);
-        console.log(`Account balance of accounts[1]: ${afterBalance}`);
-        console.log(`Account balance of accounts[2]: ${balance2}`);
-        console.log(`Account balance of accounts[2]: ${afterBalance2}`);
-        console.log(`Account balance of accounts[2]:  ${diff.toString()}`);
-
-        // await assert.strictEqual(
-        //     balance - afterBalance,
-        //     3,
-        //     "Money not subtracted from raw material supplier"
-        // );
+        console.log(`Account balance of raw material supplier: ${balance}`);
+        console.log(`Account balance of raw material supplier: ${afterBalance}`);
+        console.log(`Account balance of wine producer: ${balance2}`);
+        console.log(`Account balance of wine producer: ${afterBalance2}`);
 
 
         await assert.strictEqual(
@@ -304,12 +296,6 @@ contract('Refund', function (accounts) {
             accounts[2],
             "Wine owner is incorrect"
         );
-
-        // await assert.deepStrictEqual(
-        //     componentIds,
-        //     [0, 1, 2],
-        //     "Wine component ids are incorrect"
-        // );
        
             truffleAssert.eventEmitted(process, "processedWine");
     });
@@ -334,10 +320,10 @@ contract('Refund', function (accounts) {
 
         const afterBalance = await web3.eth.getBalance(accounts[2]);
         const afterBalance2 = await web3.eth.getBalance(accounts[3]);
-        console.log(`Account balance of accounts[2]: ${balance}`);
-        console.log(`Account balance of accounts[2]: ${afterBalance}`);
-        console.log(`Account balance of accounts[3]: ${balance2}`);
-        console.log(`Account balance of accounts[3]: ${afterBalance2}`);
+        console.log(`Account balance of wine producer: ${balance}`);
+        console.log(`Account balance of wine producer: ${afterBalance}`);
+        console.log(`Account balance of bulk distributor: ${balance2}`);
+        console.log(`Account balance of bulk distributor: ${afterBalance2}`);
 
         truffleAssert.eventEmitted(buy, "buyWine");
     });
@@ -428,16 +414,10 @@ contract('Refund', function (accounts) {
         const afterBalance = await web3.eth.getBalance(accounts[2]);
         const afterBalance2 = await web3.eth.getBalance(accounts[3]);
         const diff = web3.utils.toBN(afterBalance2).sub(web3.utils.toBN(balance2));
-        console.log(`Account balance of accounts[2]: ${balance}`);
-        console.log(`Account balance of accounts[2]: ${afterBalance}`);
-        console.log(`Account balance of accounts[3]: ${balance2}`);
-        console.log(`Account balance of accounts[3]: ${afterBalance2}`);
-
-        // await assert.strictEqual(
-        //     balance - afterBalance,
-        //     3,
-        //     "Money not subtracted from raw material supplier"
-        // );
+        console.log(`Account balance of wine producer: ${balance}`);
+        console.log(`Account balance of wine producer: ${afterBalance}`);
+        console.log(`Account balance of bulk distributor: ${balance2}`);
+        console.log(`Account balance of bulk distributor: ${afterBalance2}`);
 
         await assert.strictEqual(
             diff.toString(),
