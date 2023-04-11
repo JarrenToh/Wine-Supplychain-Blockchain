@@ -302,5 +302,5 @@ Run the tests:
   - truffle test test_supplyChain.js 
   - truffle test test_refunds.js 
 
-This will execute the test_supplyChain.js file, which contains a series of tests to ensure that the smart contract functions as expected.
+This will execute the test_supplyChain.js and test_refunds.js files, which contain series of tests to ensure that the smart contract functions as expected.
 
