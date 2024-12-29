@@ -1,5 +1,5 @@
 
-# Wine Supply Chain Smart Contract
+# Wine Supply Chain Smart Contract (VinTrustChain)
 The Wine Supply Chain Smart Contract is created to establish a supply chain for the production and distribution of wine, starting from the raw material suppliers and ending at the retailer. The supply chain consists of various stages, including raw material suppliers, wine production, bulk distribution, transit storage, filling/packaging, goods distribution, wholesaling, and retailing. Each stage is represented by a different actor in the supply chain and has its own unique functions and responsibilities.
 
 ### Activity Diagram
